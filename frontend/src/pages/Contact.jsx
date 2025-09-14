@@ -43,25 +43,25 @@ const Contact = () => {
         {
             icon: <LuMapPin className="w-6 h-6" />,
             title: "Visit Us",
-            details: ["123 Medical Center Drive", "Healthcare City, HC 12345"],
+            details: ["SMAART Healthcare Center", "Multispecialty Phygital Clinic"],
             color: "from-gray-600 to-gray-700"
         },
         {
             icon: <LuPhone className="w-6 h-6" />,
             title: "Call Us",
-            details: ["Main: (123) 456-7890", "Emergency: (123) 456-7891"],
+            details: ["Main: +91-XXXX-XXXXXX", "Telehealth: +91-XXXX-XXXXXX"],
             color: "from-gray-600 to-gray-700"
         },
         {
             icon: <LuMail className="w-6 h-6" />,
             title: "Email Us",
-            details: ["info@healthcare.com", "support@healthcare.com"],
+            details: ["info@smaarthealthcare.com", "support@smaarthealthcare.com"],
             color: "from-gray-600 to-gray-700"
         },
         {
             icon: <LuClock className="w-6 h-6" />,
             title: "Working Hours",
-            details: ["Monday - Friday: 9:00 AM - 6:00 PM", "Saturday: 9:00 AM - 1:00 PM"],
+            details: ["Monday - Saturday: 9:00 AM - 7:00 PM", "Sunday: 10:00 AM - 4:00 PM"],
             color: "from-gray-600 to-gray-700"
         }
     ]
@@ -77,10 +77,10 @@ const Contact = () => {
                     className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center"
                 >
                     <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                        Get in Touch with Us
+                        Contact SMAART Healthcare
                     </h1>
                     <p className="text-xl text-white/90 max-w-3xl mx-auto">
-                        We're here to help and answer any questions you might have
+                        Connect with our healthcare experts for personalized care and support
                     </p>
                 </motion.div>
             </div>

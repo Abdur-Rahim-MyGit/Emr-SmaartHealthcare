@@ -114,27 +114,59 @@ const AllAppointments = () => {
                 } ring-2 ring-white`}></div>
               </div>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                {appointment.userData?.name}
-                <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(appointment)}`}>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  {appointment.userData?.name || 'Unknown Patient'}
+                </h3>
+                <span className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusColor(appointment)}`}>
                   {appointment.cancelled ? 'Cancelled' : appointment.isCompleted ? 'Completed' : 'Active'}
                 </span>
-              </h3>
-              <div className="grid grid-cols-1 gap-2 mt-2">
-                {appointment.docData?.name && (
-                  <div className="flex items-center gap-2 text-sm text-green-700 font-semibold">
-                    <HiOutlineUserCircle className="w-4 h-4 text-green-700" />
-                    <span>Scheduled with Dr. {appointment.docData.name}</span>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-gray-700 border-b pb-1">Patient Details</h4>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <HiOutlineUser className="w-4 h-4 text-gray-400" />
+                    <span>{appointment.userData?.email || 'No email'}</span>
                   </div>
-                )}
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <HiOutlineCalendar className="w-4 h-4 text-gray-400" />
-                  <span>{appointment.slotDate}</span>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <HiOutlineCash className="w-4 h-4 text-gray-400" />
+                    <span>{appointment.userData?.phone || 'No phone'}</span>
+                  </div>
+                  {appointment.userData?.message && (
+                    <div className="text-sm text-gray-600">
+                      <span className="font-medium">Message:</span> {appointment.userData.message}
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <HiOutlineClock className="w-4 h-4 text-gray-400" />
-                  <span>{appointment.slotTime}</span>
+
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-gray-700 border-b pb-1">Appointment Info</h4>
+                  {appointment.docData?.name && (
+                    <div className="flex items-center gap-2 text-sm text-green-700 font-semibold">
+                      <HiOutlineUserCircle className="w-4 h-4 text-green-700" />
+                      <span>Dr. {appointment.docData.name}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <HiOutlineCalendar className="w-4 h-4 text-gray-400" />
+                    <span>{appointment.slotDate}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <HiOutlineClock className="w-4 h-4 text-gray-400" />
+                    <span>{appointment.slotTime}</span>
+                  </div>
+                  {appointment.amount > 0 && (
+                    <div className="flex items-center gap-2 text-sm text-green-600 font-semibold">
+                      <HiOutlineCurrencyDollar className="w-4 h-4 text-green-600" />
+                      <span>₹{appointment.amount}</span>
+                    </div>
+                  )}
+                  <div className="text-xs text-gray-400">
+                    ID: {appointment._id?.slice(-8)}
+                  </div>
                 </div>
               </div>
             </div>

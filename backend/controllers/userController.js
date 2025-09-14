@@ -205,7 +205,8 @@ const bookAppointment = async (req, res) => {
 
     try {
 
-        const { userId, docId, slotDate, slotTime } = req.body
+        const { docId, slotDate, slotTime } = req.body
+        const userId = req.user.id
         const docData = await doctorModel.findById(docId).select("-password")
 
         if (!docData.available) {
@@ -236,7 +237,7 @@ const bookAppointment = async (req, res) => {
             docId,
             userData,
             docData,
-            // fees removed
+            amount: docData.fees || 0,
             slotTime,
             slotDate,
             date: Date.now()
@@ -319,23 +320,31 @@ const listAppointment = async (req, res) => {
             });
         }
 
-        // Format the appointments data
+        // Format the appointments data with comprehensive details
         const formattedAppointments = appointments.map(appointment => ({
             _id: appointment._id,
             userId: appointment.userId,
             docId: appointment.docId?._id,
-            amount: appointment.amount,
+            amount: appointment.amount || 0,
             slotTime: appointment.slotTime,
             slotDate: appointment.slotDate,
             date: appointment.date,
-            cancelled: appointment.cancelled,
-            payment: appointment.payment,
-            isCompleted: appointment.isCompleted,
+            createdAt: appointment.createdAt || appointment.date,
+            cancelled: appointment.cancelled || false,
+            payment: appointment.payment || false,
+            isCompleted: appointment.isCompleted || false,
             docData: {
-                name: appointment.docId?.name || 'Unknown Doctor',
-                speciality: appointment.docId?.speciality || 'Unknown Speciality',
-                image: appointment.docId?.image || 'https://ui-avatars.com/api/?name=Unknown+Doctor',
-                address: appointment.docId?.address || 'No address available'
+                name: appointment.docData?.name || appointment.docId?.name || 'Unknown Doctor',
+                speciality: appointment.docData?.speciality || appointment.docId?.speciality || 'Unknown Speciality',
+                image: appointment.docData?.image || appointment.docId?.image || 'https://ui-avatars.com/api/?name=Unknown+Doctor',
+                address: appointment.docData?.address || appointment.docId?.address || 'SMAART Healthcare Center',
+                location: appointment.docData?.location || 'SMAART Healthcare Center'
+            },
+            userData: {
+                name: appointment.userData?.name || req.user?.name || 'Unknown Patient',
+                email: appointment.userData?.email || req.user?.email || 'No email',
+                phone: appointment.userData?.phone || req.user?.phone || 'No phone',
+                message: appointment.userData?.message || appointment.message || ''
             }
         }));
 

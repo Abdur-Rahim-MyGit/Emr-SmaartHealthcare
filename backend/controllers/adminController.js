@@ -114,18 +114,52 @@ const loginAdmin = async (req, res) => {
     }
 };
 
-// API to get all appointments list
+// API to get all appointments list with detailed information
 const appointmentsAdmin = async (req, res) => {
     try {
-
         const appointments = await appointmentModel.find({})
-        res.json({ success: true, appointments })
+            .populate({
+                path: 'docId',
+                model: 'Doctor',
+                select: 'name speciality image address'
+            })
+            .sort({ date: -1 })
+            .lean();
+
+        // Format appointments with comprehensive details for admin view
+        const formattedAppointments = appointments.map(appointment => ({
+            _id: appointment._id,
+            userId: appointment.userId,
+            docId: appointment.docId?._id,
+            amount: appointment.amount || 0,
+            slotTime: appointment.slotTime,
+            slotDate: appointment.slotDate,
+            date: appointment.date,
+            createdAt: appointment.createdAt || appointment.date,
+            cancelled: appointment.cancelled || false,
+            payment: appointment.payment || false,
+            isCompleted: appointment.isCompleted || false,
+            docData: {
+                name: appointment.docData?.name || appointment.docId?.name || 'Unknown Doctor',
+                speciality: appointment.docData?.speciality || appointment.docId?.speciality || 'Unknown Speciality',
+                image: appointment.docData?.image || appointment.docId?.image || 'https://ui-avatars.com/api/?name=Unknown+Doctor',
+                address: appointment.docData?.address || appointment.docId?.address || 'SMAART Healthcare Center',
+                location: appointment.docData?.location || 'SMAART Healthcare Center'
+            },
+            userData: {
+                name: appointment.userData?.name || 'Unknown Patient',
+                email: appointment.userData?.email || 'No email',
+                phone: appointment.userData?.phone || 'No phone',
+                message: appointment.userData?.message || appointment.message || ''
+            }
+        }));
+
+        res.json({ success: true, appointments: formattedAppointments })
 
     } catch (error) {
         console.log(error)
         res.json({ success: false, message: error.message })
     }
-
 }
 
 // API for appointment cancellation

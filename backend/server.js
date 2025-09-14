@@ -51,6 +51,7 @@ app.get('/health', (req, res) => {
 
 let retryCount = 0;
 const maxRetries = 5;
+let server = null;
 
 // Initialize connections with retry logic
 const initializeApp = async () => {
@@ -65,7 +66,7 @@ const initializeApp = async () => {
     retryCount = 0;
     
     // Start server only after successful connections
-    const server = app.listen(port, () => {
+    server = app.listen(port, () => {
       console.log(`Server started on PORT:${port}`)
       console.log(`CORS enabled for origins: ${corsOptions.origin.join(', ')}`)
     })

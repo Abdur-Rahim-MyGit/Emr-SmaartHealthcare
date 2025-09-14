@@ -18,6 +18,17 @@ const Doctors = ({ openAppointmentModal }) => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const [showFilters, setShowFilters] = useState(false)
+    const [bookedDoctors, setBookedDoctors] = useState(new Set())
+    const [showBookingModal, setShowBookingModal] = useState(false)
+    const [selectedDoctor, setSelectedDoctor] = useState(null)
+    const [bookingForm, setBookingForm] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        date: '',
+        message: ''
+    })
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     // Fetch doctors from backend
     useEffect(() => {
@@ -39,6 +50,80 @@ const Doctors = ({ openAppointmentModal }) => {
 
         fetchDoctors()
     }, [])
+
+    // Handle opening booking modal
+    const handleBookAppointment = (doctor) => {
+        setSelectedDoctor(doctor);
+        setShowBookingModal(true);
+        setBookingForm({
+            name: '',
+            email: '',
+            phone: '',
+            date: '',
+            message: ''
+        });
+    };
+
+    // Handle form input changes
+    const handleFormChange = (e) => {
+        setBookingForm({
+            ...bookingForm,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    // Handle form submission
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+
+        try {
+            const appointmentData = {
+                userData: {
+                    name: bookingForm.name,
+                    email: bookingForm.email,
+                    phone: bookingForm.phone,
+                    location: 'Center 1',
+                    message: bookingForm.message,
+                    speciality: selectedDoctor.speciality,
+                    date: bookingForm.date
+                },
+                docData: {
+                    name: selectedDoctor.name,
+                    speciality: selectedDoctor.speciality,
+                    location: 'Center 1'
+                },
+                amount: 0,
+                slotTime: '09:00',
+                slotDate: bookingForm.date,
+                cancelled: false,
+                payment: false,
+                isCompleted: false,
+                paymentDetails: null
+            };
+
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/appointment-booking/book`, appointmentData);
+            
+            if (response.data.success) {
+                setBookedDoctors(prev => new Set([...prev, selectedDoctor._id]));
+                setShowBookingModal(false);
+                toast.success(`Hello ${bookingForm.name}! Your appointment has been booked successfully. Email confirmation sent.`);
+            } else {
+                toast.error('Failed to book appointment');
+            }
+        } catch (error) {
+            console.error('Booking error:', error);
+            toast.error('Failed to book appointment');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // Close modal
+    const closeBookingModal = () => {
+        setShowBookingModal(false);
+        setSelectedDoctor(null);
+    };
 
     // Get unique specialties from doctors
     const specialties = ['All Specialties', ...new Set(doctors.map(doctor => doctor.speciality))]
@@ -98,11 +183,7 @@ const Doctors = ({ openAppointmentModal }) => {
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-12"
-                >
+                <div className="text-center mb-12">
                     <h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
                         <RiMentalHealthLine className="text-primary" />
                         Find Your Doctor
@@ -110,15 +191,11 @@ const Doctors = ({ openAppointmentModal }) => {
                     <p className="text-lg text-gray-600">
                         Choose from our expert team of healthcare professionals
                     </p>
-                </motion.div>
+                </div>
 
                 {/* Search, Sort and Filters */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-white rounded-xl shadow-sm p-6 mb-8"
-                >
+                <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+                
                     <div className="flex flex-col md:flex-row gap-4 items-center">
                         {/* Search */}
                         <div className="w-full md:w-5/6 relative">
@@ -136,30 +213,22 @@ const Doctors = ({ openAppointmentModal }) => {
                         <div className="flex items-center gap-2">
                            
                            
-                            <motion.button
-                                whileHover={{ scale: 1.05, y: -2 }}
-                                whileTap={{ scale: 0.95 }}
+                            <button
                                 onClick={() => setShowFilters(!showFilters)}
-                                className="group relative inline-flex items-center justify-center gap-3 px-6 py-3 
-                                         bg-gradient-to-br from-primary via-blue-500 to-indigo-600 text-white 
-                                         rounded-xl font-semibold shadow-[0_20px_40px_-8px_rgba(79,70,229,0.5)]
-                                         hover:shadow-[0_20px_40px_-8px_rgba(79,70,229,0.7)]
-                                         overflow-hidden transition-all duration-300"
+                                className="inline-flex items-center justify-center gap-3 px-6 py-3 
+                                         bg-primary text-white 
+                                         rounded-lg font-medium hover:bg-primary/90
+                                         transition-all duration-300"
                             >
-                                <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-500 via-indigo-500 to-primary 
-                                              opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                <HiOutlineAdjustments className="relative z-10 w-5 h-5 group-hover:rotate-180 transition-transform" />
-                                <span className="relative z-10">Filters</span>
-                            </motion.button>
+                                <HiOutlineAdjustments className="w-5 h-5" />
+                                <span>Filters</span>
+                            </button>
                         </div>
                     </div>
 
                     {/* Expandable Filters */}
-                    <motion.div
-                        initial={false}
-                        animate={{ height: showFilters ? 'auto' : 0, opacity: showFilters ? 1 : 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
+                    <div
+                        className={`overflow-hidden transition-all duration-200 ${showFilters ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
                     >
                         <div className="pt-4 mt-4 border-t">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -179,29 +248,22 @@ const Doctors = ({ openAppointmentModal }) => {
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
-                </motion.div>
+                    </div>
+                </div>
 
                 {/* Doctors Grid */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
                     {filteredDoctors.map((doctor, index) => (
-                        <motion.div
+                        <div
                             key={doctor._id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            className="group bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300"
+                            className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100"
                         >
-                            <div className="relative aspect-[3/2] overflow-hidden">
+                            <div className="relative aspect-[4/3] overflow-hidden">
                                 <img
                                     src={doctor.image || 'https://placehold.co/300x200?text=Doctor'}
                                     alt={doctor.name}
-                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
                                     <div className="absolute bottom-4 left-4">
@@ -213,10 +275,13 @@ const Doctors = ({ openAppointmentModal }) => {
                                 </div>
                             </div>
 
-                            <div className="p-5">
+                            <div className="p-4">
                                 <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
                                     {doctor.name}
                                 </h3>
+                                <p className="text-sm text-primary font-medium mt-1">
+                                    {doctor.speciality}
+                                </p>
                                 
                                 <div className="mt-3 space-y-2">
                                         <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -226,28 +291,135 @@ const Doctors = ({ openAppointmentModal }) => {
                                 </div>
 
                                 <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                                        <button
-                                            className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-all shadow-sm hover:shadow-md"
-                                            onClick={openAppointmentModal}
-                                        >
-                                            Book Now
-                                        </button>
+                                        {bookedDoctors.has(doctor._id) ? (
+                                            <button
+                                                className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium cursor-not-allowed"
+                                                disabled
+                                            >
+                                                ✓ Appointment Booked
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="px-4 py-2 bg-gradient-to-r from-primary to-blue-600 text-white rounded-lg font-medium hover:bg-primary/90 transition-all shadow-sm hover:shadow-md"
+                                                onClick={() => handleBookAppointment(doctor)}
+                                            >
+                                                Book Now
+                                            </button>
+                                        )}
                                 </div>
                             </div>
-                        </motion.div>
+                        </div>
                     ))}
-                </motion.div>
+                </div>
 
                 {/* No Results Message */}
                 {filteredDoctors.length === 0 && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-center py-12"
-                    >
+                    <div className="text-center py-12">
                         <RiMentalHealthLine className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                         <p className="text-gray-500">No doctors found matching your criteria.</p>
-                    </motion.div>
+                    </div>
+                )}
+
+                {/* Booking Modal */}
+                {showBookingModal && selectedDoctor && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 relative">
+                            <button 
+                                onClick={closeBookingModal}
+                                className="absolute top-4 right-4 text-2xl font-bold text-gray-700 hover:text-red-500 transition-colors"
+                            >
+                                ×
+                            </button>
+                            
+                            <div className="text-center mb-6">
+                                <h2 className="text-2xl font-bold text-primary mb-2">Book Appointment</h2>
+                                <p className="text-gray-600">Dr. {selectedDoctor.name} - {selectedDoctor.speciality}</p>
+                            </div>
+
+                            <form onSubmit={handleFormSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={bookingForm.name}
+                                        onChange={handleFormChange}
+                                        required
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                        placeholder="Enter your full name"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={bookingForm.email}
+                                        onChange={handleFormChange}
+                                        required
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                        placeholder="Enter your email"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={bookingForm.phone}
+                                        onChange={handleFormChange}
+                                        required
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                        placeholder="Enter your phone number"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
+                                    <input
+                                        type="date"
+                                        name="date"
+                                        value={bookingForm.date}
+                                        onChange={handleFormChange}
+                                        required
+                                        min={new Date().toISOString().split('T')[0]}
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
+                                    <textarea
+                                        name="message"
+                                        value={bookingForm.message}
+                                        onChange={handleFormChange}
+                                        rows="3"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
+                                        placeholder="Any specific concerns or requirements..."
+                                    />
+                                </div>
+
+                                <div className="flex gap-3 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={closeBookingModal}
+                                        className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-primary to-blue-600 text-white rounded-lg font-medium hover:from-primary/90 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isSubmitting ? 'Booking...' : 'Book Appointment'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 )}
             </div>
         </div>

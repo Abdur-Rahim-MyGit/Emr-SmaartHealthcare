@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock, FaHeart } from 'react-icons/fa'
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaClock, FaHeart } from 'react-icons/fa'
 
 const Footer = () => {
   const container = {
@@ -20,10 +20,10 @@ const Footer = () => {
   }
 
   const socialLinks = [
-    { icon: <FaFacebookF />, href: '#', color: 'hover:bg-blue-600' },
-    { icon: <FaTwitter />, href: '#', color: 'hover:bg-sky-500' },
-    { icon: <FaInstagram />, href: '#', color: 'hover:bg-pink-600' },
-    { icon: <FaLinkedinIn />, href: '#', color: 'hover:bg-blue-700' },
+    { icon: <FaFacebookF />, href: 'https://www.facebook.com/profile.php?id=61579152974746', color: 'hover:bg-blue-600' },
+    { icon: <FaInstagram />, href: 'https://www.instagram.com/smaart_healthcare?igsh=aWM3aDc4bDM0YjFx&utm_source=qr', color: 'hover:bg-pink-600' },
+    { icon: <FaLinkedinIn />, href: 'https://www.linkedin.com/company/smaart-healthcare/', color: 'hover:bg-blue-700' },
+    { icon: <FaYoutube />, href: 'https://youtube.com/@smaartsocialmedia?si=ugI0K7MDU13AZD-2', color: 'hover:bg-red-600' },
   ]
 
   return (

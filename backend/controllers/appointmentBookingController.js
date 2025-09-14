@@ -1,4 +1,5 @@
 import Appointment from '../models/appointmentModel.js';
+import { sendAppointmentConfirmation } from '../utils/emailService.js';
 
 export const createAppointment = async (req, res) => {
   try {
@@ -33,7 +34,31 @@ export const createAppointment = async (req, res) => {
       message: message || ''
     });
     await appointment.save();
-    res.status(201).json({ success: true, appointment });
+
+    // Send email confirmation
+    try {
+      const emailResult = await sendAppointmentConfirmation({
+        userData,
+        docData,
+        slotDate,
+        slotTime: slotTime || '09:00'
+      });
+      
+      if (emailResult.success) {
+        console.log('Appointment confirmation email sent successfully');
+      } else {
+        console.error('Failed to send email:', emailResult.error);
+      }
+    } catch (emailError) {
+      console.error('Email service error:', emailError);
+      // Don't fail the appointment creation if email fails
+    }
+
+    res.status(201).json({ 
+      success: true, 
+      appointment,
+      message: 'Appointment booked successfully! Confirmation email sent.' 
+    });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }

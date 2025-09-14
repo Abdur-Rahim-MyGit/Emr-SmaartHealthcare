@@ -1,80 +1,49 @@
 import React, { useState } from 'react';
-import { FaHeartbeat, FaBrain, FaDumbbell, FaEye, FaBalanceScale } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { FaHeartbeat, FaBrain, FaDumbbell, FaEye, FaBalanceScale, FaCalendarCheck, FaArrowRight } from 'react-icons/fa';
 
 const services = [
   {
-    title: 'SMAART Metabolism',
-    icon: <FaHeartbeat className="text-primary text-4xl mb-2" />,
-    description: [
-      'Comprehensive precision care for managing and remission of metabolic disorders',
-      'Type 2 Diabetes and Prediabetes (Insulin Resistance)',
-      'Obesity and Weight Management',
-      'Thyroid Disorders (Hypothyroidism, Hyperthyroidism)',
-      'PCOS/PCOD (Polycystic Ovary Syndrome)',
-      'Lipid Disorders (High Cholesterol, Dyslipidemia)',
-      'Fatty Liver Disease (NAFLD)',
-      'Gout (Elevated Uric Acid Levels)'
-    ]
+    id: 1,
+    title: "SMAART Metabolism",
+    description: "Comprehensive metabolic health management with AI-powered diagnostics and personalized treatment plans.",
+    image: "https://images.unsplash.com/photo-1576671081837-49000212a370?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    icon: <FaHeartbeat />,
+    features: ["Type 2 Diabetes & Prediabetes", "Obesity & Weight Management", "Thyroid Disorders", "PCOS/PCOD", "Lipid Disorders", "Fatty Liver Disease", "Gout Management"]
   },
   {
-    title: 'SMAART Minds',
-    icon: <FaBrain className="text-primary text-4xl mb-2" />,
-    description: [
-      'Focused on mental health and cognitive well-being',
-      'Anxiety Disorders (Generalized Anxiety, Panic Attacks, Social Anxiety)',
-      'Stress Management',
-      'Depression (Major Depressive Disorder, Dysthymia)',
-      'Sleep Disorders (Insomnia, Sleep Apnea Counseling)',
-      'Learning Disabilities (Dyslexia, ADHD)',
-      'PTSD, OCD',
-      'Chronic Fatigue Syndrome',
-      'Memory Problems (Early Dementia Screening, Mild Cognitive Impairment)',
-      'Cognitive Ageing, Focus, Attention, Performance assessment and enhancement'
-    ]
+    id: 2,
+    title: "SMAART Minds",
+    description: "Mental health & cognitive care combining traditional therapy with advanced assessment tools.",
+    image: "https://images.unsplash.com/photo-1544027993-37dbfe43562a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    icon: <FaBrain />,
+    features: ["Anxiety & Panic Disorders", "Depression Treatment", "Sleep Disorders", "ADHD & Learning Disabilities", "PTSD & OCD", "Memory Problems", "Cognitive Enhancement"]
   },
   {
-    title: 'SMAART Physio',
-    icon: <FaDumbbell className="text-primary text-4xl mb-2" />,
-    description: [
-      'Advanced physiotherapy and rehabilitation care',
-      'Musculoskeletal Pain (Back Pain, Neck Pain, Shoulder Pain)',
-      'Joint Disorders (Arthritis, Frozen Shoulder, Bursitis)',
-      'Pre & Post-Surgery Rehabilitation (Knee Replacement, Spine Surgery, Sports Injuries)',
-      'Sports Injuries (Ligament Tears, Sprains, Strains)',
-      'Neurological Rehabilitation (Stroke, Paralysis, Multiple Sclerosis)',
-      'Chronic Pain Syndromes (Fibromyalgia, Myofascial Pain)',
-      'Postural Imbalance and Ergonomics Correction',
-      'Pelvic Floor Therapy (Incontinence, Postpartum Rehabilitation)',
-      'Geriatric Physiotherapy'
-    ]
+    id: 3,
+    title: "SMAART Physio",
+    description: "Musculoskeletal & rehabilitation services with evidence-based treatment protocols.",
+    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    icon: <FaDumbbell />,
+    features: ["Musculoskeletal Pain", "Joint Disorders", "Pre & Post-Surgery Rehab", "Sports Injuries", "Neurological Rehabilitation", "Chronic Pain Management", "Pelvic Floor Therapy", "Geriatric Physiotherapy"]
   },
   {
-    title: 'SMAART Eyes',
-    icon: <FaEye className="text-primary text-4xl mb-2" />,
-    description: [
-      'Expert care for eye diseases',
-      'Diabetic Retinopathy',
-      'Glaucoma',
-      'Cataracts',
-      'Age-Related Macular Degeneration (AMD)'
-    ]
+    id: 4,
+    title: "SMAART Eyes",
+    description: "Comprehensive eye care with advanced diagnostic technology and specialized treatments.",
+    image: "https://images.unsplash.com/photo-1551601651-2a8555f1a136?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    icon: <FaEye />,
+    features: ["Diabetic Retinopathy", "Glaucoma Management", "Cataract Treatment", "Age-Related Macular Degeneration"]
   },
   {
-    title: 'SMAART Balance',
-    icon: <FaBalanceScale className="text-primary text-4xl mb-2" />,
-    description: [
-      'Specialized diagnosis, treatment and rehabilitation for conditions affecting balance',
-      'Vertigo (BPPV, Vestibular Migraine, Meniere’s Disease)',
-      'Labyrinthitis and Vestibular Neuritis',
-      'Postural Instability',
-      'Cervicogenic Dizziness',
-      'Motion Sickness',
-      'Post-Concussion Syndrome (Balance-related issues)',
-      'Elderly Fall Risk Assessment and Management'
-    ]
+    id: 5,
+    title: "SMAART Balance",
+    description: "Specialized vertigo & balance disorder treatment with vestibular rehabilitation programs.",
+    image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    icon: <FaBalanceScale />,
+    features: ["Vertigo (BPPV, Vestibular Migraine)", "Labyrinthitis & Vestibular Neuritis", "Postural Instability", "Motion Sickness", "Fall Risk Assessment"]
   }
 ];
-// bg-gradient-to-br from-blue-100 via-teal-100 to-white
 export default function Services({ openAppointmentModal }) {
   const [expandedIdx, setExpandedIdx] = useState(null);
 
@@ -83,48 +52,102 @@ export default function Services({ openAppointmentModal }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-teal-100 to-white py-16 px-4 md:px-12 lg:px-24">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-6 text-center font-sans">Our Services</h1>
-        <p className="text-base text-gray-600 mb-8 max-w-xl mx-auto text-center font-sans">
-          Advanced healthcare delivered by specialists. Explore our patient-centric services.
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-teal-50/20 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-primary to-teal-600 bg-clip-text text-transparent mb-4 flex items-center justify-center gap-3">
+            <FaHeartbeat className="text-primary" />
+            Our Services
+          </h1>
+          <p className="text-lg text-gray-600">
+            Comprehensive healthcare solutions delivered by our expert medical professionals
+          </p>
+        </motion.div>
+
+        {/* Services Grid */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {services.map((service, idx) => (
-            <div key={idx} className="relative bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 p-7 flex flex-col items-center border border-gray-100">
-              <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shadow-sm">
-                {React.cloneElement(service.icon, { className: "text-primary text-2xl" })}
-              </div>
-              <div className="pt-8 pb-2 w-full flex flex-col items-center">
-                <h2 className="text-lg font-bold text-gray-900 mb-2 text-center font-sans w-full">{service.title}</h2>
-                <div className="text-gray-600 mb-3 text-sm leading-relaxed font-sans w-full flex flex-col items-center">
-                  <div className="mb-2 font-semibold text-gray-700 text-sm text-center w-full">{service.description[0]}</div>
-                  {expandedIdx === idx ? (
-                    <ul className="list-disc list-inside mt-4 text-gray-700 text-left w-full text-[15px] font-normal">
-                      {service.description.slice(1).map((item, i) => (
-                        <li key={i} className="mb-2 pl-1">{item}</li>
-                      ))}
-                    </ul>
-                  ) : null}
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="group bg-gradient-to-br from-white via-white to-blue-50/20 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-white/50 backdrop-blur-sm"
+            >
+              <div className="relative aspect-[3/2] overflow-hidden">
+                <img
+                  src={service.image}
+                  alt={service.title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                  <div className="absolute bottom-4 left-4">
+                    <div className="flex items-center gap-2 text-white">
+                      {React.cloneElement(service.icon, { className: "w-5 h-5" })}
+                      <span className="font-medium">{service.title}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex gap-3 mt-6 w-full justify-center">
+              </div>
+
+              <div className="p-5">
+                <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                  {service.title}
+                </h3>
+                
+                <div className="mt-3">
+                  <p className="text-sm text-gray-600 mb-3">
+                    {service.description}
+                  </p>
+                  
+                  {expandedIdx === idx && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="space-y-2 pt-2 border-t border-gray-100">
+                        {service.features.map((feature, i) => (
+                          <div key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                            <div className="w-1 h-1 rounded-full bg-primary mt-2 flex-shrink-0"></div>
+                            <span>{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between mt-4 pt-4 border-t">
                   <button
-                    className={`px-5 py-2 rounded-md text-white text-sm font-semibold shadow-md transition-colors duration-200 ${expandedIdx === idx ? 'bg-primary/80' : 'bg-primary'} hover:bg-primary/90`}
                     onClick={() => handleReadMore(idx)}
+                    className="px-4 py-2 text-primary border border-primary/20 rounded-lg font-medium hover:bg-gradient-to-r hover:from-primary/10 hover:to-blue-50 transition-all"
                   >
-                    {expandedIdx === idx ? 'Show Less' : 'Read More'}
+                    {expandedIdx === idx ? 'Show Less' : 'Learn More'}
                   </button>
                   <button
-                    className="px-5 py-2 rounded-md bg-teal-500 text-white text-sm font-semibold shadow-md hover:bg-teal-600 transition-colors duration-200"
+                    className="px-4 py-2 bg-gradient-to-r from-primary to-blue-600 text-white rounded-lg font-medium hover:from-primary/90 hover:to-blue-500 transition-all shadow-sm hover:shadow-md"
                     onClick={openAppointmentModal}
                   >
                     Book Now
                   </button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

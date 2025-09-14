@@ -44,17 +44,54 @@ const Login = () => {
 
   useEffect(() => {
     if (token) {
-      navigate('/')
+      navigate('/dashboard')
     }
   }, [token])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/5 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/30 py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23004d99' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+        }}></div>
+      </div>
+
+      {/* Floating Elements */}
+      <motion.div
+        animate={{
+          y: [0, -20, 0],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        className="absolute top-20 right-20 w-16 h-16 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg flex items-center justify-center z-10"
+      >
+        <FaUserAlt className="w-8 h-8 text-primary" />
+      </motion.div>
+
+      <motion.div
+        animate={{
+          y: [0, 20, 0],
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2
+        }}
+        className="absolute bottom-32 left-20 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg flex items-center justify-center z-10"
+      >
+        <FaLock className="w-6 h-6 text-secondary" />
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-md w-full mx-auto"
+        className="max-w-md w-full mx-auto relative z-10"
       >
         {/* Logo or Brand */}
         <div className="text-center mb-8">
@@ -73,7 +110,7 @@ const Login = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="bg-white py-8 px-6 shadow-xl rounded-2xl"
+          className="glass-card py-8 px-6 shadow-xl rounded-2xl"
         >
           <form onSubmit={onSubmitHandler} className="space-y-6">
             {/* Name Field */}
@@ -94,9 +131,7 @@ const Login = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl 
-                             focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
-                             bg-gray-50 hover:bg-gray-100 transition-colors"
+                    className="input-field pl-10"
                     placeholder="John Doe"
                     required
                   />
@@ -121,9 +156,7 @@ const Login = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl 
-                           focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
-                           bg-gray-50 hover:bg-gray-100 transition-colors"
+                  className="input-field pl-10"
                   placeholder="you@example.com"
                   required
                 />
@@ -147,9 +180,7 @@ const Login = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl 
-                           focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent
-                           bg-gray-50 hover:bg-gray-100 transition-colors"
+                  className="input-field pl-10"
                   placeholder="••••••••"
                   required
                 />
@@ -161,11 +192,7 @@ const Login = () => {
               type="submit"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 
-                       bg-gradient-to-r from-primary to-primary/90
-                       text-white rounded-xl shadow-lg shadow-primary/30
-                       hover:shadow-xl hover:shadow-primary/40 
-                       transition-all duration-200 font-medium"
+              className="btn-primary w-full flex items-center justify-center gap-2"
             >
               {state === 'Sign Up' ? 'Create Account' : 'Sign In'}
               <FaArrowRight className="h-4 w-4" />

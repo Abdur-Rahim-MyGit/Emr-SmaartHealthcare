@@ -47,6 +47,7 @@ export const assets = {
     verified_icon,
     info_icon,
     profile_pic,
+    profile_icon: profile_pic, // Add profile_icon as alias for profile_pic
     arrow_icon,
     contact_image,
     about_image,
@@ -55,7 +56,8 @@ export const assets = {
     dropdown_icon,
     upload_icon,
     stripe_logo,
-    razorpay_logo
+    razorpay_logo,
+    no_data: 'https://via.placeholder.com/300x200/f3f4f6/9ca3af?text=No+Data+Found' // Add no_data placeholder
 }
 
 export const specialityData = [

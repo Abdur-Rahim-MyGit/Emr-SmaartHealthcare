@@ -25,7 +25,8 @@ import Features from './components/Features'
 import DoctorContextProvider from './context/DoctorContext'
 import MedicalRecords from './pages/MedicalRecords'
 import Services from './pages/Services'
-import AppointmentBooking from './pages/AppointmentBooking';
+import AppointmentBooking from './pages/AppointmentBooking'
+import Dashboard from './pages/Dashboard';
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useContext(AppContext);
@@ -79,6 +80,11 @@ const App = () => {
               </ProtectedRoute>
             } />
             <Route path='/verify' element={<Verify />} />
+            <Route path='/dashboard' element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } />
             <Route path='/medical-records' element={<MedicalRecords />} />
             <Route path='/services' element={<Services openAppointmentModal={openAppointmentModal} />} />
           </Routes>

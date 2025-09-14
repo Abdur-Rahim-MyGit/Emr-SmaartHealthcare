@@ -34,10 +34,10 @@ const About = () => {
           className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center"
         >
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Transforming Healthcare for a Better Tomorrow
+            SMAART Healthcare - Redefining Medical Excellence
           </h1>
           <p className="text-xl text-white/90 max-w-3xl mx-auto">
-            We're committed to providing exceptional healthcare services with compassion and innovation
+            Multispecialty Phygital Clinics combining physical & digital healthcare with AI-powered precision medicine
           </p>
         </motion.div>
       </div>
@@ -62,9 +62,9 @@ const About = () => {
               <h2 className="text-2xl font-bold text-gray-900">Our Mission</h2>
             </div>
             <p className="text-gray-600 leading-relaxed">
-              To provide accessible, high-quality healthcare services to all patients, 
-              ensuring their well-being and satisfaction through compassionate care 
-              and state-of-the-art medical technology.
+              To democratize healthcare by making quality medical services accessible and affordable 
+              through innovative phygital clinics that combine the best of physical and digital healthcare, 
+              powered by AI-driven precision medicine and compassionate patient-centric care.
             </p>
           </motion.div>
 
@@ -79,8 +79,9 @@ const About = () => {
               <h2 className="text-2xl font-bold text-gray-900">Our Vision</h2>
             </div>
             <p className="text-gray-600 leading-relaxed">
-              To be the leading healthcare provider in the region, setting new standards 
-              in patient care, medical innovation, and community health awareness.
+              To become the global leader in phygital healthcare delivery, transforming how patients 
+              experience medical care through seamless integration of technology, personalized treatment 
+              protocols, and outcome-driven healthcare solutions that set new industry standards.
             </p>
           </motion.div>
         </div>
@@ -110,10 +111,10 @@ const About = () => {
               <div className="inline-flex p-4 bg-primary/10 rounded-xl mb-6">
                 <HiOutlineHeart className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-4">Compassion</h3>
+              <h3 className="text-xl font-semibold mb-4">Medical Excellence</h3>
               <p className="text-gray-600">
-                We treat every patient with empathy and understanding, 
-                providing care that goes beyond medical treatment.
+                Global quality standards with precision medicine, evidence-based protocols, 
+                and outcome-driven approach to deliver superior healthcare results.
               </p>
             </motion.div>
 
@@ -124,10 +125,10 @@ const About = () => {
               <div className="inline-flex p-4 bg-primary/10 rounded-xl mb-6">
                 <RiStethoscopeLine className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-4">Excellence</h3>
+              <h3 className="text-xl font-semibold mb-4">Accessibility & Affordability</h3>
               <p className="text-gray-600">
-                We strive for excellence in all aspects of healthcare, 
-                from diagnosis to treatment and follow-up care.
+                Making quality healthcare accessible to all through telehealth services, 
+                affordable pricing, and convenient phygital clinic locations.
               </p>
             </motion.div>
 
@@ -138,10 +139,10 @@ const About = () => {
               <div className="inline-flex p-4 bg-primary/10 rounded-xl mb-6">
                 <HiOutlineScale className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="text-xl font-semibold mb-4">Integrity</h3>
+              <h3 className="text-xl font-semibold mb-4">Technology Driven</h3>
               <p className="text-gray-600">
-                We maintain the highest standards of ethical conduct 
-                and transparency in all our operations.
+                Advanced AI-powered healthcare combining physical and digital treatment modalities 
+                for personalized, data-driven medical solutions.
               </p>
             </motion.div>
           </div>

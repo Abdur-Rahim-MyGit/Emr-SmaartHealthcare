@@ -4,6 +4,7 @@ import { DoctorContext } from '../context/DoctorContext';
 import { FaSignOutAlt, FaBell } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import logoSvg from '../assets/lOGOSmaart.svg';
 
 const DoctorNavbar = () => {
   const navigate = useNavigate();
@@ -20,7 +21,12 @@ const DoctorNavbar = () => {
   return (
     <nav className="bg-white border-b px-6 py-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center space-x-3">
+          <img 
+            src={logoSvg} 
+            alt="SMAART Healthcare Logo" 
+            className="h-8 w-auto"
+          />
           <h1 className="text-xl font-semibold text-gray-800">
             {profileData?.name ? `Dr. ${profileData.name}'s Dashboard` : 'Doctor Dashboard'}
           </h1>

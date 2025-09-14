@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import logo from '../assets/lOGOSmaart.svg';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
@@ -11,6 +11,7 @@ const Navbar = () => {
   const { token, setToken } = useContext(AppContext)
   const [showMenu, setShowMenu] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const dropdownRef = useRef(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +20,23 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowMenu(false)
+      }
+    }
+    
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showMenu])
 
   const logout = () => {
     localStorage.removeItem('token')
@@ -35,7 +53,7 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-lg' : 'bg-white'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-gradient-to-r from-blue-50/95 via-white/95 to-teal-50/95 backdrop-blur-xl border-b border-white/20 ${scrolled ? 'shadow-xl' : 'shadow-lg'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -46,9 +64,9 @@ const Navbar = () => {
             whileTap={{ scale: 0.98 }}
           >
             <span className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-                <span style={{ height: '40px', display: 'flex', alignItems: 'center' }}>
+                <span style={{ height: '32px', display: 'flex', alignItems: 'center' }}>
                   {/* Inline SVG logo */}
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 857.53 99.01" style={{ height: '40px' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 857.53 99.01" style={{ height: '32px' }}>
                     <defs>
                       <linearGradient id="linear-gradient" x1="73.08" y1="172.09" x2="318.24" y2="-73.08" gradientUnits="userSpaceOnUse">
                         <stop offset="0" stopColor="#004d99"/>
@@ -101,7 +119,7 @@ const Navbar = () => {
           {/* Action Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {token ? (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

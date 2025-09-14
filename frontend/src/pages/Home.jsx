@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FaUserMd, FaCalendarCheck, FaHospital, FaHeartbeat, FaClock, FaUserFriends, FaAward, FaPhoneAlt, FaQuoteLeft } from 'react-icons/fa'
+import { FaUserMd, FaCalendarCheck, FaHospital, FaHeartbeat, FaClock, FaUserFriends, FaAward, FaPhoneAlt, FaQuoteLeft, FaEye } from 'react-icons/fa'
 import { RiMentalHealthFill } from 'react-icons/ri'
 import { HiOutlineArrowNarrowRight } from 'react-icons/hi'
 
@@ -13,18 +13,18 @@ const Home = () => {
     const features = [
         {
             icon: <FaUserMd className="w-8 h-8" />,
-            title: "Expert Doctors",
-            description: "Our team of highly qualified doctors provides personalized care and treatment."
+            title: "Medical Excellence",
+            description: "Global quality standards with precision medicine and outcome-driven approach."
         },
         {
             icon: <FaCalendarCheck className="w-8 h-8" />,
-            title: "Easy Appointments",
-            description: "Book appointments online with just a few clicks, anytime, anywhere."
+            title: "Accessible & Affordable",
+            description: "Telehealth services for convenience & accessibility with affordable healthcare solutions."
         },
         {
-            icon: <RiMentalHealthFill className="w-8 h-8" />,
-            title: "Comprehensive Care",
-            description: "From diagnosis to treatment, we provide complete healthcare solutions."
+            icon: <FaEye className="w-8 h-8" />,
+            title: "Technology Driven",
+            description: "Advanced AI-powered healthcare combining physical and digital treatment modalities."
         }
     ];
 
@@ -62,91 +62,227 @@ const Home = () => {
     return (
         <div className="min-h-screen">
             {/* Hero Section */}
-            <div className="relative min-h-[90vh] bg-gradient-to-br from-primary/5 via-primary/10 to-transparent overflow-hidden">
+            <div className="relative min-h-[90vh] bg-gradient-to-br from-gray-50 via-blue-50/30 to-teal-50/20 overflow-hidden">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0">
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.4 }}
-                        transition={{ duration: 2 }}
+                        initial={{ opacity: 0, scale: 0.8, x: -100 }}
+                        animate={{ 
+                            opacity: [0.2, 0.4, 0.2], 
+                            scale: [0.8, 1.2, 0.8],
+                            x: [-100, 0, -100],
+                            rotate: [0, 180, 360]
+                        }}
+                        transition={{ 
+                            duration: 8, 
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                        }}
                         className="absolute top-20 left-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl"
                     />
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.3 }}
-                        transition={{ duration: 2, delay: 0.5 }}
+                        initial={{ opacity: 0, scale: 0.5, y: 100 }}
+                        animate={{ 
+                            opacity: [0.1, 0.3, 0.1], 
+                            scale: [0.5, 1.5, 0.5],
+                            y: [100, -50, 100],
+                            rotate: [0, -180, -360]
+                        }}
+                        transition={{ 
+                            duration: 10, 
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 2
+                        }}
                         className="absolute bottom-20 right-20 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"
+                    />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.3 }}
+                        animate={{ 
+                            opacity: [0.1, 0.25, 0.1], 
+                            scale: [0.3, 1, 0.3],
+                            rotate: [0, 360, 720]
+                        }}
+                        transition={{ 
+                            duration: 12, 
+                            repeat: Infinity,
+                            ease: "linear"
+                        }}
+                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-teal-400/15 rounded-full blur-3xl"
                     />
                 </div>
 
                 {/* Grid Pattern */}
                 <div className="absolute inset-0 bg-[url('/images/grid.svg')] opacity-5"></div>
 
-                {/* Floating Elements */}
+                {/* Enhanced Floating Elements */}
                 <motion.div
+                    initial={{ opacity: 0, scale: 0, rotate: -180 }}
                     animate={{
-                        y: [0, -20, 0],
+                        opacity: 1,
+                        scale: [0.8, 1.2, 0.8],
+                        y: [0, -30, 0],
+                        rotate: [0, 360, 0],
+                        x: [0, 10, 0]
                     }}
                     transition={{
-                        duration: 5,
-                        repeat: Infinity,
-                        ease: "easeInOut"
+                        opacity: { duration: 1 },
+                        scale: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+                        y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+                        rotate: { duration: 8, repeat: Infinity, ease: "linear" },
+                        x: { duration: 3, repeat: Infinity, ease: "easeInOut" }
                     }}
-                    className="absolute top-20 right-[20%] w-20 h-20 bg-white rounded-2xl shadow-xl flex items-center justify-center"
+                    whileHover={{ scale: 1.5, rotate: 180 }}
+                    className="absolute top-20 right-[20%] w-20 h-20 bg-gradient-to-br from-white via-blue-50 to-white rounded-2xl shadow-2xl flex items-center justify-center cursor-pointer"
                 >
-                    <FaHeartbeat className="w-10 h-10 text-primary" />
+                    <motion.div
+                        animate={{ rotate: [0, -360, 0] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                    >
+                        <FaHeartbeat className="w-10 h-10 text-primary" />
+                    </motion.div>
                 </motion.div>
 
                 <motion.div
+                    initial={{ opacity: 0, scale: 0, x: -100 }}
                     animate={{
-                        y: [0, 20, 0],
+                        opacity: 1,
+                        scale: [0.9, 1.1, 0.9],
+                        y: [0, 25, 0],
+                        x: [0, 15, 0],
+                        rotate: [0, -10, 10, 0]
                     }}
                     transition={{
-                        duration: 5,
+                        opacity: { duration: 1.2, delay: 0.5 },
+                        scale: { duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 },
+                        y: { duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 },
+                        x: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 },
+                        rotate: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }
+                    }}
+                    whileHover={{ scale: 1.4, y: -20 }}
+                    className="absolute bottom-32 left-[15%] w-16 h-16 bg-gradient-to-br from-white via-teal-50 to-white rounded-2xl shadow-2xl flex items-center justify-center cursor-pointer"
+                >
+                    <motion.div
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                        <FaUserMd className="w-8 h-8 text-primary" />
+                    </motion.div>
+                </motion.div>
+
+                {/* Additional Floating Elements */}
+                <motion.div
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{
+                        opacity: [0.7, 1, 0.7],
+                        y: [0, -20, 0],
+                        rotate: [0, 180, 360]
+                    }}
+                    transition={{
+                        duration: 8,
                         repeat: Infinity,
                         ease: "easeInOut",
-                        delay: 1
+                        delay: 2
                     }}
-                    className="absolute bottom-32 left-[15%] w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center"
+                    className="absolute top-1/3 left-[5%] w-12 h-12 bg-gradient-to-br from-primary/20 to-blue-500/20 rounded-full shadow-lg flex items-center justify-center"
                 >
-                    <FaUserMd className="w-8 h-8 text-primary" />
+                    <FaHospital className="w-6 h-6 text-primary" />
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{
+                        opacity: [0.6, 0.9, 0.6],
+                        x: [0, -15, 0],
+                        scale: [0.8, 1.1, 0.8]
+                    }}
+                    transition={{
+                        duration: 6,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 3
+                    }}
+                    className="absolute bottom-1/3 right-[8%] w-14 h-14 bg-gradient-to-br from-teal-100 to-primary/10 rounded-xl shadow-lg flex items-center justify-center"
+                >
+                    <FaCalendarCheck className="w-7 h-7 text-primary" />
                 </motion.div>
 
                 {/* Main Content */}
                 <div className="container mx-auto px-6 h-full flex items-center relative z-10">
                     <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
+                            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ 
+                                duration: 1.2, 
+                                ease: "easeOut",
+                                staggerChildren: 0.2
+                            }}
                             className="space-y-8"
                         >
-                            <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-primary font-medium shadow-sm">
-                                <FaAward className="w-5 h-5" />
-                                <span>Trusted Healthcare Provider</span>
-                            </div>
-                            <h1 className="text-5xl lg:text-7xl font-bold">
-                                Your Health
-                                <div className="relative">
-                                    <span className="text-primary block mt-2">Our Priority</span>
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: "100%" }}
-                                        transition={{ duration: 1, delay: 0.5 }}
-                                        className="absolute -bottom-2 left-0 h-1 bg-primary/20 rounded-full"
-                                    />
-                                </div>
-                            </h1>
-                            <p className="text-xl text-gray-600 leading-relaxed">
-                                Experience world-class healthcare with our team of expert doctors. 
-                                Book your appointment today and take the first step towards better health.
-                            </p>
-                            <div className="flex flex-wrap gap-4">
+                            <motion.div 
+                                initial={{ opacity: 0, x: -50 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.3, duration: 0.8 }}
+                                whileHover={{ scale: 1.05, x: 10 }}
+                                className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full text-primary font-medium shadow-sm cursor-pointer"
+                            >
+                                <motion.div
+                                    animate={{ rotate: [0, 360] }}
+                                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                                >
+                                    <FaAward className="w-5 h-5" />
+                                </motion.div>
+                                <span>Advanced Healthcare Powered with AI</span>
+                            </motion.div>
+                            <motion.h1 
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5, duration: 1 }}
+                                className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-gray-900 via-primary to-teal-600 bg-clip-text text-transparent"
+                            >
+                                <motion.span
+                                    initial={{ opacity: 0, x: -30 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.7, duration: 0.8 }}
+                                >
+                                    SMAART{" "}
+                                </motion.span>
+                                <motion.span
+                                    initial={{ opacity: 0, x: 30 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.9, duration: 0.8 }}
+                                >
+                                    Healthcare
+                                </motion.span>
+                            </motion.h1>
+                            <motion.p 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 1.1, duration: 0.8 }}
+                                className="text-xl text-gray-600 leading-relaxed"
+                            >
+                                Multispecialty Phygital Clinics combining physical & digital healthcare. 
+                                Seamless blend of preventive care, diagnostics, advanced treatment, and compassionate patient-centric care.
+                            </motion.p>
+                            <motion.div 
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 1.3, duration: 0.8 }}
+                                className="flex flex-wrap gap-4"
+                            >
                                 <motion.button
-                                    whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-                                    whileTap={{ scale: 0.98 }}
-                                    className="group relative bg-gradient-to-r from-primary via-primary/90 to-blue-600 text-white px-8 py-4 rounded-xl text-lg font-medium 
-                                             transition-all duration-300 shadow-[0_10px_20px_-3px_rgba(79,70,229,0.3)] hover:shadow-[0_20px_30px_-3px_rgba(79,70,229,0.4)]
+                                    initial={{ opacity: 0, x: -30 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.5, duration: 0.6 }}
+                                    whileHover={{ 
+                                        scale: 1.05, 
+                                        boxShadow: "0 20px 25px -5px rgba(79, 70, 229, 0.4)",
+                                        y: -2
+                                    }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="group relative bg-gradient-to-r from-primary to-blue-600 text-white px-8 py-4 rounded-xl text-lg font-medium 
+                                             transition-all duration-300 shadow-lg hover:shadow-2xl
                                              flex items-center gap-3 overflow-hidden"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-primary/90 to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -154,34 +290,67 @@ const Home = () => {
                                     <HiOutlineArrowNarrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
                                 </motion.button>
                                 <motion.button
-                                    whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-                                    whileTap={{ scale: 0.98 }}
-                                    className="group relative bg-gradient-to-r from-white to-gray-50 text-transparent bg-clip-text px-8 py-4 rounded-xl text-lg font-medium 
-                                             transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-primary/20 hover:border-primary/30
+                                    initial={{ opacity: 0, x: 30 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 1.7, duration: 0.6 }}
+                                    whileHover={{ 
+                                        scale: 1.05, 
+                                        boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.2)",
+                                        y: -2,
+                                        borderColor: "rgba(79, 70, 229, 0.5)"
+                                    }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="group relative bg-white text-primary px-8 py-4 rounded-xl text-lg font-medium 
+                                             transition-all duration-300 shadow-lg hover:shadow-xl border border-primary/20 hover:border-primary/30
                                              flex items-center gap-2"
                                 >
                                     <FaPhoneAlt className="w-5 h-5 text-primary" />
                                     <span className="bg-gradient-to-r from-primary to-blue-600 text-transparent bg-clip-text font-semibold">Contact Us</span>
                                 </motion.button>
-                            </div>
+                            </motion.div>
 
                             {/* Stats Preview */}
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5 }}
+                                transition={{ delay: 1.9, duration: 0.8 }}
                                 className="flex items-center gap-8 pt-8"
                             >
                                 {stats.slice(0, 2).map((stat, index) => (
-                                    <div key={index} className="flex items-center gap-3">
-                                        <div className="w-12 h-12 rounded-xl bg-white shadow-md flex items-center justify-center text-primary">
+                                    <motion.div 
+                                        key={index} 
+                                        initial={{ opacity: 0, scale: 0.5 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ delay: 2.1 + index * 0.2, duration: 0.6 }}
+                                        whileHover={{ scale: 1.1, y: -5 }}
+                                        className="flex items-center gap-3"
+                                    >
+                                        <motion.div 
+                                            whileHover={{ rotate: 360 }}
+                                            transition={{ duration: 0.5 }}
+                                            className="w-12 h-12 rounded-xl bg-white shadow-md flex items-center justify-center text-primary"
+                                        >
                                             {stat.icon}
-                                        </div>
+                                        </motion.div>
                                         <div>
-                                            <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                                            <div className="text-sm text-gray-500">{stat.label}</div>
+                                            <motion.div 
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 2.3 + index * 0.2 }}
+                                                className="text-2xl font-bold text-gray-900"
+                                            >
+                                                {stat.value}
+                                            </motion.div>
+                                            <motion.div 
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                transition={{ delay: 2.5 + index * 0.2 }}
+                                                className="text-sm text-gray-500"
+                                            >
+                                                {stat.label}
+                                            </motion.div>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </motion.div>
                         </motion.div>
@@ -241,8 +410,8 @@ const Home = () => {
             </div>
 
             {/* Stats Section */}
-            <div className="py-20 bg-white">
-                <div className="max-w-7xl mx-auto px-4">
+            <div className="py-20 bg-gradient-to-br from-white via-blue-50/10 to-teal-50/10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                         {stats.map((stat, index) => (
                             <motion.div
@@ -251,9 +420,9 @@ const Home = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.1 }}
-                                className="text-center"
+                                className="text-center bg-gradient-to-br from-white via-white to-blue-50/20 p-6 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-white/50 backdrop-blur-sm"
                             >
-                                <div className="bg-primary/5 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary text-2xl">
+                                <div className="bg-gradient-to-br from-primary/10 to-primary/5 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 text-primary text-2xl">
                                     {stat.icon}
                                 </div>
                                 <div className="text-4xl font-bold text-gray-900 mb-2">{stat.value}</div>
@@ -266,32 +435,52 @@ const Home = () => {
 
             {/* Features Section */}
             <div className="py-20 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         className="text-center mb-16"
                     >
-                        <h2 className="text-4xl font-bold mb-4">Why Choose Us</h2>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                        <h2 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+                            <FaHeartbeat className="text-primary" />
+                            Why Choose Us
+                        </h2>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                             Experience the best healthcare services with our state-of-the-art facilities and expert medical professionals.
                         </p>
                     </motion.div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {features.map((feature, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ delay: index * 0.2 }}
-                                whileHover={{ y: -10 }}
-                                className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                                transition={{ delay: index * 0.1 }}
+                                className="group bg-gradient-to-br from-white via-white to-blue-50/20 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-white/50 backdrop-blur-sm"
                             >
-                                <div className="text-primary mb-6">{feature.icon}</div>
-                                <h3 className="text-xl font-semibold mb-4">{feature.title}</h3>
-                                <p className="text-gray-600">{feature.description}</p>
+                                <div className="relative aspect-[3/2] overflow-hidden">
+                                    <div className="w-full h-full bg-gradient-to-br from-primary/20 via-blue-100 to-teal-100 flex items-center justify-center group-hover:from-primary/30 group-hover:via-blue-200 group-hover:to-teal-200 transition-all duration-300">
+                                        {React.cloneElement(feature.icon, { className: "text-primary text-6xl" })}
+                                    </div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent">
+                                        <div className="absolute bottom-4 left-4">
+                                            <div className="flex items-center gap-2 text-white">
+                                                <FaHeartbeat className="w-5 h-5" />
+                                                <span className="font-medium">Healthcare Excellence</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-5">
+                                    <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors mb-3">
+                                        {feature.title}
+                                    </h3>
+                                    <p className="text-sm text-gray-600">
+                                        {feature.description}
+                                    </p>
+                                </div>
                             </motion.div>
                         ))}
                     </div>
@@ -299,31 +488,34 @@ const Home = () => {
             </div>
 
             {/* Testimonials Section */}
-            <div className="py-20 bg-white">
-                <div className="max-w-7xl mx-auto px-4">
+            <div className="py-20 bg-gradient-to-br from-white via-blue-50/10 to-teal-50/10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         className="text-center mb-16"
                     >
-                        <h2 className="text-4xl font-bold mb-4">What Our Patients Say</h2>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                        <h2 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
+                            <FaQuoteLeft className="text-primary" />
+                            What Our Patients Say
+                        </h2>
+                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
                             Read about the experiences of our patients and how we've helped them with their healthcare needs.
                         </p>
                     </motion.div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {testimonials.map((testimonial, index) => (
                             <motion.div
                                 key={index}
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ delay: index * 0.2 }}
-                                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 relative"
+                                transition={{ delay: index * 0.1 }}
+                                className="group bg-gradient-to-br from-white via-white to-blue-50/20 rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-white/50 backdrop-blur-sm relative"
                             >
-                                <div className="absolute top-8 right-8 text-primary/10 text-4xl">
+                                <div className="absolute top-6 right-6 text-primary/10 text-3xl">
                                     <FaQuoteLeft />
                                 </div>
                                 
@@ -331,15 +523,15 @@ const Home = () => {
                                     <img
                                         src={testimonial.image}
                                         alt={testimonial.name}
-                                        className="w-16 h-16 rounded-full object-cover ring-4 ring-primary/10"
+                                        className="w-12 h-12 rounded-full object-cover ring-2 ring-primary/10"
                                     />
                                     <div>
-                                        <h3 className="text-lg font-semibold text-gray-900">{testimonial.name}</h3>
-                                        <p className="text-gray-500">{testimonial.role}</p>
+                                        <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">{testimonial.name}</h3>
+                                        <p className="text-sm text-gray-500">{testimonial.role}</p>
                                     </div>
                                 </div>
 
-                                <p className="text-gray-600 mb-6 relative z-10">
+                                <p className="text-sm text-gray-600 mb-4 relative z-10">
                                     "{testimonial.quote}"
                                 </p>
 
@@ -347,7 +539,7 @@ const Home = () => {
                                     {[...Array(testimonial.rating)].map((_, i) => (
                                         <svg
                                             key={i}
-                                            className="w-5 h-5 text-yellow-400"
+                                            className="w-4 h-4 text-yellow-400"
                                             fill="currentColor"
                                             viewBox="0 0 20 20"
                                         >

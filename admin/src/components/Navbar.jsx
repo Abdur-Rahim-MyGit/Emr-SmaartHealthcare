@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react'
 import { DoctorContext } from '../context/DoctorContext'
 import { AdminContext } from '../context/AdminContext'
 import { useNavigate } from 'react-router-dom'
-import { FaBell, FaCog, FaSignOutAlt, FaClinicMedical } from 'react-icons/fa'
+import { FaBell, FaCog, FaSignOutAlt } from 'react-icons/fa'
+import logoSvg from '../assets/lOGOSmaart.svg'
 
 const Navbar = () => {
   const { setDToken } = useContext(DoctorContext)
@@ -24,13 +25,12 @@ const Navbar = () => {
         <div className="flex items-center justify-between px-6 py-3">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3">
-            <div className="text-primary text-2xl">
-              <FaClinicMedical />
-            </div>
+            <img 
+              src={logoSvg} 
+              alt="SMAART Healthcare Logo" 
+              className="h-10 w-auto"
+            />
             <div>
-              <h1 className="text-xl font-semibold bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                SMAART Healthcare
-              </h1>
               <p className="text-xs text-gray-500">Admin Panel</p>
             </div>
           </div>
