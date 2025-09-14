@@ -573,7 +573,7 @@ const Home = () => {
                         whileTap={{ scale: 0.95 }}
                     >
                         <Link
-                            to="/appointment"
+                            to="/services"
                             className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-white via-gray-50 to-white text-primary px-8 py-4 rounded-xl text-lg font-semibold 
                                      transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-white/50 hover:border-white/70"
                         >

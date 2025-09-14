@@ -316,7 +316,7 @@ const About = () => {
             Experience healthcare that puts you first. Book an appointment today and take the first step towards better health.
           </p>
           <button 
-            onClick={() => navigate('/appointment')}
+            onClick={() => navigate('/services')}
             className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 
                      bg-gradient-to-br from-primary via-blue-500 to-indigo-600 text-white 
                      rounded-xl font-semibold shadow-[0_20px_40px_-8px_rgba(79,70,229,0.5)]

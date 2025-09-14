@@ -7,6 +7,7 @@ import { AppContext } from '../context/AppContext'
 import { HiOutlineSearch, HiOutlineLocationMarker, HiOutlineClock, HiOutlineAdjustments } from 'react-icons/hi'
 import { RiStethoscopeLine, RiMentalHealthLine } from 'react-icons/ri'
 import { FaSortAmountDown } from 'react-icons/fa'
+import BookingModal from '../components/BookingModal'
 
 const Doctors = ({ openAppointmentModal }) => {
     const { currencySymbol } = useContext(AppContext)
@@ -21,14 +22,6 @@ const Doctors = ({ openAppointmentModal }) => {
     const [bookedDoctors, setBookedDoctors] = useState(new Set())
     const [showBookingModal, setShowBookingModal] = useState(false)
     const [selectedDoctor, setSelectedDoctor] = useState(null)
-    const [bookingForm, setBookingForm] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        date: '',
-        message: ''
-    })
-    const [isSubmitting, setIsSubmitting] = useState(false)
 
     // Fetch doctors from backend
     useEffect(() => {
@@ -123,6 +116,13 @@ const Doctors = ({ openAppointmentModal }) => {
     const closeBookingModal = () => {
         setShowBookingModal(false);
         setSelectedDoctor(null);
+        setBookingForm({
+            name: '',
+            email: '',
+            phone: '',
+            date: '',
+            message: ''
+        });
     };
 
     // Get unique specialties from doctors
@@ -301,7 +301,10 @@ const Doctors = ({ openAppointmentModal }) => {
                                         ) : (
                                             <button
                                                 className="px-4 py-2 bg-gradient-to-r from-primary to-blue-600 text-white rounded-lg font-medium hover:bg-primary/90 transition-all shadow-sm hover:shadow-md"
-                                                onClick={() => handleBookAppointment(doctor)}
+                                                onClick={() => {
+                                                    setSelectedDoctor(doctor)
+                                                    setShowBookingModal(true)
+                                                }}
                                             >
                                                 Book Now
                                             </button>
@@ -321,106 +324,14 @@ const Doctors = ({ openAppointmentModal }) => {
                 )}
 
                 {/* Booking Modal */}
-                {showBookingModal && selectedDoctor && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md mx-4 relative">
-                            <button 
-                                onClick={closeBookingModal}
-                                className="absolute top-4 right-4 text-2xl font-bold text-gray-700 hover:text-red-500 transition-colors"
-                            >
-                                ×
-                            </button>
-                            
-                            <div className="text-center mb-6">
-                                <h2 className="text-2xl font-bold text-primary mb-2">Book Appointment</h2>
-                                <p className="text-gray-600">Dr. {selectedDoctor.name} - {selectedDoctor.speciality}</p>
-                            </div>
-
-                            <form onSubmit={handleFormSubmit} className="space-y-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        value={bookingForm.name}
-                                        onChange={handleFormChange}
-                                        required
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                                        placeholder="Enter your full name"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        value={bookingForm.email}
-                                        onChange={handleFormChange}
-                                        required
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                                        placeholder="Enter your email"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                                    <input
-                                        type="tel"
-                                        name="phone"
-                                        value={bookingForm.phone}
-                                        onChange={handleFormChange}
-                                        required
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                                        placeholder="Enter your phone number"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Date *</label>
-                                    <input
-                                        type="date"
-                                        name="date"
-                                        value={bookingForm.date}
-                                        onChange={handleFormChange}
-                                        required
-                                        min={new Date().toISOString().split('T')[0]}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Message (Optional)</label>
-                                    <textarea
-                                        name="message"
-                                        value={bookingForm.message}
-                                        onChange={handleFormChange}
-                                        rows="3"
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
-                                        placeholder="Any specific concerns or requirements..."
-                                    />
-                                </div>
-
-                                <div className="flex gap-3 pt-4">
-                                    <button
-                                        type="button"
-                                        onClick={closeBookingModal}
-                                        className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="flex-1 px-6 py-3 bg-gradient-to-r from-primary to-blue-600 text-white rounded-lg font-medium hover:from-primary/90 hover:to-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {isSubmitting ? 'Booking...' : 'Book Appointment'}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
+                <BookingModal 
+                    isOpen={showBookingModal}
+                    onClose={() => setShowBookingModal(false)}
+                    doctorInfo={selectedDoctor}
+                    onBookingSuccess={(doctorId) => {
+                        setBookedDoctors(prev => new Set([...prev, doctorId]));
+                    }}
+                />
             </div>
         </div>
     )

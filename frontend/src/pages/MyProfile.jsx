@@ -347,7 +347,7 @@ const MyProfile = () => {
                         <div className='text-center py-8'>
                             <p className='text-gray-500 mb-4'>No appointments found</p>
                             <button 
-                                onClick={() => navigate('/doctors')}
+                                onClick={() => navigate('/services')}
                                 className='px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90'
                             >
                                 Book an Appointment

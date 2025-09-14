@@ -8,7 +8,10 @@ import { FaUserCircle, FaCalendarCheck, FaSignOutAlt, FaUserMd, FaHome, FaInfoCi
 const Navbar = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { token, setToken } = useContext(AppContext)
+  const { token, setToken, handleLogout } = useContext(AppContext)
+  
+  // Debug: Log token state
+  console.log('Navbar token state:', token, typeof token)
   const [showMenu, setShowMenu] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const dropdownRef = useRef(null)
@@ -39,9 +42,8 @@ const Navbar = () => {
   }, [showMenu])
 
   const logout = () => {
-    localStorage.removeItem('token')
-    setToken(false)
-    navigate('/login')
+    handleLogout()
+    navigate('/')
   }
 
   const navItems = [
@@ -118,7 +120,7 @@ const Navbar = () => {
 
           {/* Action Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            {token ? (
+            {token && token !== '' && token !== 'false' ? (
               <div className="relative" ref={dropdownRef}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -219,7 +221,7 @@ const Navbar = () => {
                   <span>{item.label}</span>
                 </NavLink>
               ))}
-              {token ? (
+              {token && token !== '' && token !== 'false' ? (
                 <>
                   <NavLink
                     to="/my-appointments"

@@ -1,13 +1,16 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { AppContext } from '../context/AppContext'
-import { HiOutlineUserCircle, HiOutlineClock, HiOutlineAcademicCap, HiOutlineCalendar } from 'react-icons/hi'
+import { motion } from 'framer-motion'
+import { HiOutlineLocationMarker, HiOutlineClock, HiOutlineCalendar, HiOutlineAcademicCap } from 'react-icons/hi'
+import BookingModal from './BookingModal'
 import { RiStethoscopeLine, RiMentalHealthLine } from 'react-icons/ri'
 
 const TopDoctors = () => {
     const navigate = useNavigate()
     const { doctors, currencySymbol } = useContext(AppContext)
+    const [showBookingModal, setShowBookingModal] = useState(false)
+    const [selectedDoctor, setSelectedDoctor] = useState(null)
 
     const container = {
         hidden: { opacity: 0 },
@@ -104,8 +107,8 @@ const TopDoctors = () => {
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                             onClick={() => {
-                                                navigate(`/appointment/${doctor._id}`)
-                                                window.scrollTo(0, 0)
+                                                setSelectedDoctor(doctor)
+                                                setShowBookingModal(true)
                                             }}
                                             className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary 
                                                      rounded-lg font-medium hover:bg-primary hover:text-white transition-all ml-auto"
@@ -143,6 +146,13 @@ const TopDoctors = () => {
                     </button>
                 </motion.div>
             </div>
+            
+            {/* Booking Modal */}
+            <BookingModal 
+                isOpen={showBookingModal}
+                onClose={() => setShowBookingModal(false)}
+                doctorInfo={selectedDoctor}
+            />
         </div>
     )
 }

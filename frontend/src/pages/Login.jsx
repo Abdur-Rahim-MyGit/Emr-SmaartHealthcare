@@ -198,19 +198,21 @@ const Login = () => {
               <FaArrowRight className="h-4 w-4" />
             </motion.button>
 
-            {/* Toggle State */}
-            <div className="text-center mt-6">
-              <p className="text-sm text-gray-600">
-                {state === 'Sign Up' ? 'Already have an account?' : "Don't have an account?"}
-                <button
-                  type="button"
-                  onClick={() => setState(state === 'Sign Up' ? 'Login' : 'Sign Up')}
-                  className="ml-2 text-primary hover:text-primary/80 font-medium transition-colors"
-                >
-                  {state === 'Sign Up' ? 'Sign In' : 'Create One'}
-                </button>
-              </p>
-            </div>
+            {/* Toggle State - Hidden for now */}
+            {false && (
+              <div className="text-center mt-6">
+                <p className="text-sm text-gray-600">
+                  {state === 'Sign Up' ? 'Already have an account?' : "Don't have an account?"}
+                  <button
+                    type="button"
+                    onClick={() => setState(state === 'Sign Up' ? 'Login' : 'Sign Up')}
+                    className="ml-2 text-primary hover:text-primary/80 font-medium transition-colors"
+                  >
+                    {state === 'Sign Up' ? 'Sign In' : 'Create One'}
+                  </button>
+                </p>
+              </div>
+            )}
           </form>
         </motion.div>
       </motion.div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaHeartbeat, FaBrain, FaDumbbell, FaEye, FaBalanceScale, FaCalendarCheck, FaArrowRight } from 'react-icons/fa';
+import BookingModal from '../components/BookingModal';
 
 const services = [
   {
@@ -46,6 +47,7 @@ const services = [
 ];
 export default function Services({ openAppointmentModal }) {
   const [expandedIdx, setExpandedIdx] = useState(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
 
   const handleReadMore = idx => {
     setExpandedIdx(expandedIdx === idx ? null : idx);
@@ -139,7 +141,7 @@ export default function Services({ openAppointmentModal }) {
                   </button>
                   <button
                     className="px-4 py-2 bg-gradient-to-r from-primary to-blue-600 text-white rounded-lg font-medium hover:from-primary/90 hover:to-blue-500 transition-all shadow-sm hover:shadow-md"
-                    onClick={openAppointmentModal}
+                    onClick={() => setShowBookingModal(true)}
                   >
                     Book Now
                   </button>
@@ -149,6 +151,12 @@ export default function Services({ openAppointmentModal }) {
           ))}
         </motion.div>
       </div>
+      
+      {/* Booking Modal */}
+      <BookingModal 
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+      />
     </div>
   );
 }

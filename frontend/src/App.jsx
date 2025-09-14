@@ -1,6 +1,6 @@
 import React from 'react'
 import Navbar from './components/Navbar'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import Home from './pages/Home'
 import Doctors from './pages/Doctors'
 import Login from './pages/Login'
@@ -37,6 +37,7 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const App = () => {
+  const navigate = useNavigate();
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const openAppointmentModal = () => setShowAppointmentModal(true);
   const closeAppointmentModal = () => setShowAppointmentModal(false);
@@ -50,12 +51,24 @@ const App = () => {
           <Routes>
             <Route path='/' element={
               <div className="flex flex-col space-y-0">
-                <Banner />
-                <Features />
-                <MedicalServices />
-                <TopDoctors />
-                <Testimonials />
-                <CallToAction />
+                <div className="min-h-screen">
+                  <Banner />
+                  <div className="py-4">
+                    <Features />
+                  </div>
+                  <div className="py-4">
+                    <MedicalServices />
+                  </div>
+                  <div className="py-4">
+                    <TopDoctors />
+                  </div>
+                  <div className="py-4">
+                    <Testimonials />
+                  </div>
+                  <div className="py-4">
+                    <CallToAction />
+                  </div>
+                </div>
               </div>
             } />
             <Route path='/home' element={<Home openAppointmentModal={openAppointmentModal} />} />
@@ -64,11 +77,7 @@ const App = () => {
             <Route path='/login' element={<Login />} />
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
-            <Route path='/appointment/:docId' element={
-              <ProtectedRoute>
-                <Appointment />
-              </ProtectedRoute>
-            } />
+            <Route path='/appointment/:docId' element={<Navigate to="/services" replace />} />
             <Route path='/my-appointments' element={
               <ProtectedRoute>
                 <MyAppointments />
