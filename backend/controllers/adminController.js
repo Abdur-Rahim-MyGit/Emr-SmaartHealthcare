@@ -272,9 +272,9 @@ const adminDashboard = async (req, res) => {
 // API for adding Patient
 const addPatient = async (req, res) => {
     try {
-        const {
+        // Parse JSON string fields if present
+        let {
             uhid,
-            alternateUhid,
             patientName,
             email,
             password,
@@ -286,52 +286,32 @@ const addPatient = async (req, res) => {
             address,
             medicalInfo,
             insuranceStatus,
-            organDonorStatus
+            organDonorStatus,
+            governmentId,
+            insuranceDetails,
+            referringDoctor
         } = req.body;
-
-        // Validate required fields
-        if (!uhid || !patientName || !email || !phone || !dateOfBirth || !gender || !bloodGroup || !address || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing required fields'
-            });
-        }
+        // Validate phone number format
+        if (phone && !/^[0-9]{10}$/.test(phone)) errors.push('Invalid phone number format. Must be 10 digits.');
+        // Validate email format
+        if (email && !validator.isEmail(email)) errors.push('Invalid email format');
 
         // Check if patient with UHID or email already exists in patientModel
-        const existingPatient = await patientModel.findOne({ 
-            $or: [{ uhid }, { email }]
-        });
+        const existingPatient = await patientModel.findOne({ $or: [{ uhid }, { email }] });
         if (existingPatient) {
-            return res.status(400).json({
-                success: false,
-                message: existingPatient.uhid === uhid 
-                    ? 'Patient with this UHID already exists'
-                    : 'Patient with this email already exists'
-            });
+            errors.push(existingPatient.uhid === uhid ? 'Patient with this UHID already exists' : 'Patient with this email already exists');
         }
-
         // Check if user with this email already exists in userModel
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
-            return res.status(400).json({
-                success: false,
-                message: 'A user with this email already exists'
-            });
+            errors.push('A user with this email already exists');
         }
 
-        // Validate phone number format
-        if (!/^[0-9]{10}$/.test(phone)) {
+        // If any errors, return and do NOT create user or patient
+        if (errors.length > 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Invalid phone number format. Must be 10 digits.'
-            });
-        }
-
-        // Validate email format
-        if (!validator.isEmail(email)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid email format'
+                message: errors.join(', ')
             });
         }
 
@@ -352,13 +332,25 @@ const addPatient = async (req, res) => {
         // Create new patient
         let photographUrl = '';
         if (req.file) {
-            // If using local storage
-            photographUrl = `/uploads/${req.file.filename}`;
-            // If using cloudinary, upload and get URL here
+            try {
+                const cloudinaryResult = await cloudinary.uploader.upload(req.file.path, {
+                    folder: 'patients',
+                    public_id: `${uhid}_${Date.now()}`
+                });
+                photographUrl = cloudinaryResult.secure_url;
+            } catch (cloudErr) {
+                console.error('Cloudinary upload error:', cloudErr);
+                photographUrl = `/uploads/${req.file.filename}`; // fallback to local
+            }
         }
+        let governmentIdDocumentUrl = '';
+        if (req.files && req.files.governmentIdDocument) {
+            governmentIdDocumentUrl = `/uploads/${req.files.governmentIdDocument[0].filename}`;
+            governmentId.document = governmentIdDocumentUrl;
+        }
+
         const patient = new patientModel({
             uhid,
-            alternateUhid,
             patientName,
             email,
             phone,
@@ -374,7 +366,11 @@ const addPatient = async (req, res) => {
             },
             insuranceStatus: insuranceStatus || 'Not Insured',
             organDonorStatus: organDonorStatus || 'No',
-            photograph: photographUrl
+            photograph: photographUrl,
+            governmentId,
+            insuranceDetails,
+            consent,
+            referringDoctor
         });
 
         await patient.save();
@@ -400,32 +396,6 @@ const addPatient = async (req, res) => {
         });
     }
 };
-
-// Get all patients
-const getAllPatients = catchAsyncErrors(async (req, res) => {
-    try {
-        // Get both regular users and patients
-        const [users, patients] = await Promise.all([
-            userModel.find({ role: 'user' }).select('-password'),
-            patientModel.find()
-        ]);
-
-        // Combine the results
-        const allPatients = [...users, ...patients];
-
-        res.status(200).json({
-            success: true,
-            patients: allPatients
-        });
-    } catch (error) {
-        console.error('Error in getAllPatients:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching patients',
-            error: error.message
-        });
-    }
-});
 
 // Get a single patient's details
 const getPatientDetails = catchAsyncErrors(async (req, res) => {
@@ -497,6 +467,33 @@ const getPatientDetails = catchAsyncErrors(async (req, res) => {
         });
     }
 });
+
+
+// Get all patients (users and patients)
+const getAllPatients = async (req, res) => {
+    try {
+        // Get both regular users and patients
+        const [users, patients] = await Promise.all([
+            userModel.find({ role: 'user' }).select('-password'),
+            patientModel.find()
+        ]);
+
+        // Combine the results
+        const allPatients = [...users, ...patients];
+
+        res.status(200).json({
+            success: true,
+            patients: allPatients
+        });
+    } catch (error) {
+        console.error('Error in getAllPatients:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching patients',
+            error: error.message
+        });
+    }
+};
 
 export {
     loginAdmin,

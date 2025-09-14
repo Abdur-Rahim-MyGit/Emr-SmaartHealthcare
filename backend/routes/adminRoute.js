@@ -43,7 +43,10 @@ adminRouter.post("/cancel-appointment", authAdmin, appointmentCancel);
 adminRouter.get("/dashboard", authAdmin, adminDashboard);
 
 // Patient management
-adminRouter.post("/add-patient", authAdmin, upload.single('photograph'), addPatient);
+adminRouter.post("/add-patient", authAdmin, upload.fields([
+    { name: 'photograph', maxCount: 1 },
+    { name: 'governmentIdDocument', maxCount: 1 }
+]), addPatient);
 adminRouter.get("/patients", authAdmin, getAllPatients);
 adminRouter.get("/patient-details/:patientId", authAdmin, async (req, res) => {
     try {

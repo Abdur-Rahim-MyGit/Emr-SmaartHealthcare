@@ -23,6 +23,9 @@ const port = process.env.PORT || 4000
 // middlewares
 app.use(express.json())
 
+// Serve uploads folder as static for images
+app.use('/uploads', express.static('uploads'));
+
 // Configure CORS
 // Configure CORS
 const corsOptions = {
