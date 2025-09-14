@@ -7,51 +7,50 @@ import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaHospital } from 'react-i
 
 const AddPatient = () => {
   const { aToken } = useContext(AdminContext)
-  const [formData, setFormData] = useState({
-    uhid: '',
-    alternateUhid: '',
-    patientName: '',
-    email: '',
-    password: '',
-    phone: '',
-    dateOfBirth: '',
-    gender: '',
-    bloodGroup: '',
-    occupation: '',
-    address: {
-      line1: '',
-      line2: '',
-      city: '',
-      state: '',
-      zipCode: ''
-    },
-    medicalInfo: {
-      height: '',
-      weight: '',
-      allergies: '',
-      chronicConditions: '',
-      currentMedications: '',
-      emergencyContact: {
-        name: '',
-        phone: '',
-        relationship: ''
+    const [formData, setFormData] = useState({
+      uhid: '',
+      patientName: '',
+      email: '',
+      password: '',
+      phone: '',
+      dateOfBirth: '',
+      gender: '',
+      bloodGroup: '',
+      occupation: '',
+      referringDoctor: { name: '', clinic: '' },
+      address: {
+        line1: '',
+        line2: '',
+        city: '',
+        state: '',
+        zipCode: ''
+      },
+      insuranceStatus: 'Not Insured',
+      organDonorStatus: 'No',
+      photograph: '',
+      governmentId: { type: '', number: '', document: '' },
+      insuranceDetails: { provider: '', policyNumber: '', validity: '' },
+      consent: {
+        dataCollection: false,
+        clinicalTreatment: false,
+        teleconsultation: false,
+        dataSharing: false
+      },
+      medicalInfo: {
+        height: '',
+        weight: '',
+        allergies: '',
+        chronicConditions: '',
+        currentMedications: '',
+        emergencyContact: {
+          name: '',
+          phone: '',
+          relationship: ''
+        }
       }
-    },
-    insuranceStatus: 'Not Insured',
-    organDonorStatus: 'No',
-    photograph: '',
-    governmentId: { type: '', number: '' },
-    insuranceDetails: { provider: '', policyNumber: '', validity: '' },
-    consent: {
-      dataCollection: false,
-      clinicalTreatment: false,
-      teleconsultation: false,
-      dataSharing: false
-    }
-  })
+    })
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-
   const handleChange = (e) => {
     const { name, value } = e.target
     if (name.includes('.')) {
@@ -133,18 +132,18 @@ const AddPatient = () => {
       toast.error('Gender is required')
       return false
     }
-    if (!formData.bloodGroup) {
-      toast.error('Blood group is required')
-      return false
-    }
     if (!formData.address.line1.trim() || !formData.address.city.trim() || !formData.address.state.trim() || !formData.address.zipCode.trim()) {
       toast.error('Address fields (except line 2) are required')
       return false
     }
-    if (!formData.medicalInfo.emergencyContact.name.trim() || !formData.medicalInfo.emergencyContact.phone.trim()) {
-      toast.error('Emergency contact name and phone are required')
+    // Emergency contact validation
+    if (!formData.medicalInfo.emergencyContact.name.trim() ||
+        !formData.medicalInfo.emergencyContact.phone.trim() ||
+        !formData.medicalInfo.emergencyContact.relationship.trim()) {
+      toast.error('Emergency contact details are required')
       return false
     }
+    // Blood group is now optional
     return true
   }
 
@@ -163,9 +162,8 @@ const AddPatient = () => {
 
     try {
       const form = new FormData();
-      form.append('uhid', formData.uhid);
-      form.append('alternateUhid', formData.alternateUhid);
-      form.append('patientName', formData.patientName);
+  form.append('uhid', formData.uhid);
+  form.append('patientName', formData.patientName);
       form.append('email', formData.email);
       form.append('password', formData.password);
       form.append('phone', formData.phone);
@@ -174,12 +172,16 @@ const AddPatient = () => {
       form.append('bloodGroup', formData.bloodGroup);
       form.append('occupation', formData.occupation);
       form.append('address', JSON.stringify(formData.address));
-      form.append('medicalInfo', JSON.stringify(formData.medicalInfo));
+      form.append('referringDoctor', JSON.stringify(formData.referringDoctor));
       form.append('insuranceStatus', formData.insuranceStatus);
       form.append('organDonorStatus', formData.organDonorStatus);
       form.append('governmentId', JSON.stringify(formData.governmentId));
+      if (formData.governmentId.document) {
+        form.append('governmentIdDocument', formData.governmentId.document);
+      }
       form.append('insuranceDetails', JSON.stringify(formData.insuranceDetails));
       form.append('consent', JSON.stringify(formData.consent));
+      form.append('medicalInfo', JSON.stringify(formData.medicalInfo));
       if (formData.photograph) {
         form.append('photograph', formData.photograph);
       }
@@ -197,7 +199,6 @@ const AddPatient = () => {
         toast.success('Patient added successfully');
         setFormData({
           uhid: '',
-          alternateUhid: '',
           patientName: '',
           email: '',
           password: '',
@@ -206,12 +207,24 @@ const AddPatient = () => {
           gender: '',
           bloodGroup: '',
           occupation: '',
+          referringDoctor: { name: '', clinic: '' },
           address: {
             line1: '',
             line2: '',
             city: '',
             state: '',
             zipCode: ''
+          },
+          insuranceStatus: 'Not Insured',
+          organDonorStatus: 'No',
+          photograph: '',
+          governmentId: { type: '', number: '', document: '' },
+          insuranceDetails: { provider: '', policyNumber: '', validity: '' },
+          consent: {
+            dataCollection: false,
+            clinicalTreatment: false,
+            teleconsultation: false,
+            dataSharing: false
           },
           medicalInfo: {
             height: '',
@@ -224,17 +237,6 @@ const AddPatient = () => {
               phone: '',
               relationship: ''
             }
-          },
-          insuranceStatus: 'Not Insured',
-          organDonorStatus: 'No',
-          photograph: '',
-          governmentId: { type: '', number: '' },
-          insuranceDetails: { provider: '', policyNumber: '', validity: '' },
-          consent: {
-            dataCollection: false,
-            clinicalTreatment: false,
-            teleconsultation: false,
-            dataSharing: false
           }
         });
       } else {
@@ -249,136 +251,58 @@ const AddPatient = () => {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Add New Patient</h1>
-        <p className="text-gray-500">Fill in the details to add a new patient to the system</p>
-      </div>
-
-  <form onSubmit={handleSubmit} className="space-y-6" encType="multipart/form-data">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Photograph <span className="text-red-500">*</span></label>
-              <input type="file" accept="image/*" name="photograph" onChange={e => setFormData(prev => ({ ...prev, photograph: e.target.files[0] }))} required className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center py-8 px-2">
+      <div className="w-full max-w-4xl">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-extrabold text-blue-900 tracking-tight mb-2 flex items-center justify-center"><FaUser className="mr-2 text-blue-600" /> Add New Patient</h1>
+          <p className="text-lg text-blue-700">Fill in the details to add a new patient to the system</p>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-8" encType="multipart/form-data">
+          {/* Photograph */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col md:flex-row gap-6 items-center">
+            <div className="flex flex-col items-center w-full md:w-1/3">
+              <label className="block text-base font-semibold text-gray-700 mb-2">Photograph <span className="text-red-500">*</span></label>
+              <div className="w-32 h-32 rounded-full bg-blue-100 flex items-center justify-center mb-2 overflow-hidden border-2 border-blue-300">
+                {formData.photograph ? (
+                  <img src={URL.createObjectURL(formData.photograph)} alt="Preview" className="object-cover w-full h-full" />
+                ) : (
+                  <FaUser className="text-5xl text-blue-400" />
+                )}
+              </div>
+              <input type="file" accept="image/*" name="photograph" onChange={e => setFormData(prev => ({ ...prev, photograph: e.target.files[0] }))} required className="w-full px-4 py-2 border border-blue-300 rounded-lg" />
             </div>
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
-            <div className="space-y-4">
+            <div className="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Basic Info - reordered and fixed */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  UHID <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="uhid"
-                  value={formData.uhid}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center"><FaUser className="mr-1 text-blue-500" /> Patient Name <span className="text-red-500">*</span></label>
+                <input type="text" name="patientName" value={formData.patientName} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Alternate UHID</label>
-                <input
-                  type="text"
-                  name="alternateUhid"
-                  value={formData.alternateUhid}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">UHID <span className="text-red-500">*</span></label>
+                <input type="text" name="uhid" value={formData.uhid} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Patient Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="patientName"
-                  value={formData.patientName}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center"><FaEnvelope className="mr-1 text-blue-500" /> Email <span className="text-red-500">*</span></label>
+                <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center">Password <span className="text-red-500">*</span></label>
+                <input type={showPassword ? "text" : "password"} name="password" value={formData.password} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required minLength={6} autoComplete="new-password" />
+                <button type="button" className="mt-1 text-xs text-blue-600 underline" onClick={() => setShowPassword(prev => !prev)}>
+                  {showPassword ? "Hide" : "Show"} Password
+                </button>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center"><FaPhone className="mr-1 text-blue-500" /> Phone Number <span className="text-red-500">*</span></label>
+                <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary pr-10"
-                    required
-                    minLength={6}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-                <p className="mt-1 text-xs text-gray-500">Password must be at least 6 characters long</p>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth <span className="text-red-500">*</span></label>
+                <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required max={new Date().toISOString().split('T')[0]} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                  pattern="[0-9]{10}"
-                  title="Please enter a valid 10-digit phone number"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Date of Birth <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                  max={new Date().toISOString().split('T')[0]}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Gender <span className="text-red-500">*</span>
-                </label>
-                <select
-                  name="gender"
-                  value={formData.gender}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-1">Gender <span className="text-red-500">*</span></label>
+                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
                   <option value="">Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -386,16 +310,8 @@ const AddPatient = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Blood Group <span className="text-red-500">*</span>
-                </label>
-                <select
-                  name="bloodGroup"
-                  value={formData.bloodGroup}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                >
+                <label className="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
+                <select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400">
                   <option value="">Select Blood Group</option>
                   <option value="A+">A+</option>
                   <option value="A-">A-</option>
@@ -409,272 +325,115 @@ const AddPatient = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Occupation</label>
-                <input
-                  type="text"
-                  name="occupation"
-                  value={formData.occupation}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                />
+                <input type="text" name="occupation" value={formData.occupation} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" />
               </div>
             </div>
           </div>
-
-          {/* Medical Information */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Medical Information</h2>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Height (cm)</label>
-                  <input
-                    type="number"
-                    name="medicalInfo.height"
-                    value={formData.medicalInfo.height}
-                    onChange={handleMedicalInfoChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                    min="0"
-                    max="300"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
-                  <input
-                    type="number"
-                    name="medicalInfo.weight"
-                    value={formData.medicalInfo.weight}
-                    onChange={handleMedicalInfoChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                    min="0"
-                    max="500"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Allergies</label>
-                <textarea
-                  name="medicalInfo.allergies"
-                  value={formData.medicalInfo.allergies}
-                  onChange={handleMedicalInfoChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  rows="2"
-                  placeholder="List any known allergies"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Chronic Conditions</label>
-                <textarea
-                  name="medicalInfo.chronicConditions"
-                  value={formData.medicalInfo.chronicConditions}
-                  onChange={handleMedicalInfoChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  rows="2"
-                  placeholder="List any chronic conditions"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Current Medications</label>
-                <textarea
-                  name="medicalInfo.currentMedications"
-                  value={formData.medicalInfo.currentMedications}
-                  onChange={handleMedicalInfoChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  rows="2"
-                  placeholder="List current medications"
-                />
-              </div>
+          {/* Referring Doctor */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Referring Doctor Name</label>
+              <input type="text" name="referringDoctor.name" value={formData.referringDoctor.name} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" placeholder="Doctor Name" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Referring Doctor Clinic (if any)</label>
+              <input type="text" name="referringDoctor.clinic" value={formData.referringDoctor.clinic} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" placeholder="Clinic Name" />
             </div>
           </div>
-
-          {/* Emergency Contact */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Emergency Contact</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Contact Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="medicalInfo.emergencyContact.name"
-                  value={formData.medicalInfo.emergencyContact.name}
-                  onChange={handleEmergencyContactChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Contact Phone <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="tel"
-                  name="medicalInfo.emergencyContact.phone"
-                  value={formData.medicalInfo.emergencyContact.phone}
-                  onChange={handleEmergencyContactChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                  pattern="[0-9]{10}"
-                  title="Please enter a valid 10-digit phone number"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Relationship</label>
-                <input
-                  type="text"
-                  name="medicalInfo.emergencyContact.relationship"
-                  value={formData.medicalInfo.emergencyContact.relationship}
-                  onChange={handleEmergencyContactChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                />
-              </div>
-            </div>
-          </div>
-
           {/* Address Information */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Address Information</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Address Line 1 <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="address.line1"
-                  value={formData.address.line1}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2</label>
-                <input
-                  type="text"
-                  name="address.line2"
-                  value={formData.address.line2}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    City <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="address.city"
-                    value={formData.address.city}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    State <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="address.state"
-                    value={formData.address.state}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                    required
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  ZIP Code <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  name="address.zipCode"
-                  value={formData.address.zipCode}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                  pattern="[0-9]{6}"
-                  title="Please enter a valid 6-digit ZIP code"
-                />
-              </div>
+          <div className="bg-white rounded-2xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center"><FaMapMarkerAlt className="mr-1 text-blue-500" /> Address Line 1 <span className="text-red-500">*</span></label>
+              <input type="text" name="address.line1" value={formData.address.line1} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2</label>
+              <input type="text" name="address.line2" value={formData.address.line2} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">City <span className="text-red-500">*</span></label>
+              <input type="text" name="address.city" value={formData.address.city} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">State <span className="text-red-500">*</span></label>
+              <input type="text" name="address.state" value={formData.address.state} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code <span className="text-red-500">*</span></label>
+              <input type="text" name="address.zipCode" value={formData.address.zipCode} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required pattern="[0-9]{6}" title="Please enter a valid 6-digit ZIP code" />
             </div>
           </div>
-
-          {/* Additional Information */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Government ID Proof</label>
-            <select name="governmentId.type" value={formData.governmentId.type} onChange={e => setFormData(prev => ({ ...prev, governmentId: { ...prev.governmentId, type: e.target.value } }))} className="w-full px-4 py-2 border border-gray-300 rounded-lg">
-              <option value="">Select ID Type</option>
-              <option value="Aadhaar">Aadhaar</option>
-              <option value="Passport">Passport</option>
-              <option value="Driver's License">Driver's License</option>
-            </select>
-            <input type="text" name="governmentId.number" value={formData.governmentId.number} onChange={e => setFormData(prev => ({ ...prev, governmentId: { ...prev.governmentId, number: e.target.value } }))} placeholder="ID Number" className="w-full px-4 py-2 border border-gray-300 rounded-lg mt-2" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Insurance Details</label>
-            <input type="text" name="insuranceDetails.provider" value={formData.insuranceDetails.provider} onChange={e => setFormData(prev => ({ ...prev, insuranceDetails: { ...prev.insuranceDetails, provider: e.target.value } }))} placeholder="Provider" className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2" />
-            <input type="text" name="insuranceDetails.policyNumber" value={formData.insuranceDetails.policyNumber} onChange={e => setFormData(prev => ({ ...prev, insuranceDetails: { ...prev.insuranceDetails, policyNumber: e.target.value } }))} placeholder="Policy Number" className="w-full px-4 py-2 border border-gray-300 rounded-lg mb-2" />
-            <input type="text" name="insuranceDetails.validity" value={formData.insuranceDetails.validity} onChange={e => setFormData(prev => ({ ...prev, insuranceDetails: { ...prev.insuranceDetails, validity: e.target.value } }))} placeholder="Validity" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Consent</label>
-            <div className="space-y-2">
-              <label className="flex items-center"><input type="checkbox" checked={formData.consent.dataCollection} onChange={e => setFormData(prev => ({ ...prev, consent: { ...prev.consent, dataCollection: e.target.checked } }))} /> <span className="ml-2">Consent for Data Collection & Storage</span></label>
-              <label className="flex items-center"><input type="checkbox" checked={formData.consent.clinicalTreatment} onChange={e => setFormData(prev => ({ ...prev, consent: { ...prev.consent, clinicalTreatment: e.target.checked } }))} /> <span className="ml-2">Consent for Clinical Treatment</span></label>
-              <label className="flex items-center"><input type="checkbox" checked={formData.consent.teleconsultation} onChange={e => setFormData(prev => ({ ...prev, consent: { ...prev.consent, teleconsultation: e.target.checked } }))} /> <span className="ml-2">Consent for Teleconsultation</span></label>
-              <label className="flex items-center"><input type="checkbox" checked={formData.consent.dataSharing} onChange={e => setFormData(prev => ({ ...prev, consent: { ...prev.consent, dataSharing: e.target.checked } }))} /> <span className="ml-2">Consent for Data Sharing</span></label>
+          {/* Government ID Proof */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Government ID Type</label>
+              <select name="governmentId.type" value={formData.governmentId.type} onChange={e => setFormData(prev => ({ ...prev, governmentId: { ...prev.governmentId, type: e.target.value } }))} className="w-full px-4 py-2 border border-blue-300 rounded-lg">
+                <option value="">Select ID Type</option>
+                <option value="Aadhaar">Aadhaar</option>
+                <option value="Passport">Passport</option>
+                <option value="Driver's License">Driver's License</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">ID Number</label>
+              <input type="text" name="governmentId.number" value={formData.governmentId.number} onChange={e => setFormData(prev => ({ ...prev, governmentId: { ...prev.governmentId, number: e.target.value } }))} placeholder="ID Number" className="w-full px-4 py-2 border border-blue-300 rounded-lg" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Upload Document</label>
+              <input type="file" accept="application/pdf,image/*" name="governmentId.document" onChange={e => setFormData(prev => ({ ...prev, governmentId: { ...prev.governmentId, document: e.target.files[0] } }))} className="w-full px-4 py-2 border border-blue-300 rounded-lg" />
             </div>
           </div>
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Additional Information</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Insurance Status</label>
-                <select
-                  name="insuranceStatus"
-                  value={formData.insuranceStatus}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                >
-                  <option value="Not Insured">Not Insured</option>
-                  <option value="Insured">Insured</option>
-                  <option value="Pending">Pending</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Organ Donor Status</label>
-                <select
-                  name="organDonorStatus"
-                  value={formData.organDonorStatus}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary"
-                  required
-                >
-                  <option value="No">No</option>
-                  <option value="Yes">Yes</option>
-                </select>
+          {/* Insurance, Consent & Emergency Contact */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Insurance Details</label>
+              <input type="text" name="insuranceDetails.provider" value={formData.insuranceDetails.provider} onChange={e => setFormData(prev => ({ ...prev, insuranceDetails: { ...prev.insuranceDetails, provider: e.target.value } }))} placeholder="Provider" className="w-full px-4 py-2 border border-blue-300 rounded-lg mb-2" />
+              <input type="text" name="insuranceDetails.policyNumber" value={formData.insuranceDetails.policyNumber} onChange={e => setFormData(prev => ({ ...prev, insuranceDetails: { ...prev.insuranceDetails, policyNumber: e.target.value } }))} placeholder="Policy Number" className="w-full px-4 py-2 border border-blue-300 rounded-lg mb-2" />
+              <input type="text" name="insuranceDetails.validity" value={formData.insuranceDetails.validity} onChange={e => setFormData(prev => ({ ...prev, insuranceDetails: { ...prev.insuranceDetails, validity: e.target.value } }))} placeholder="Validity" className="w-full px-4 py-2 border border-blue-300 rounded-lg" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Consent</label>
+              <div className="space-y-2">
+                <label className="flex items-center"><input type="checkbox" checked={formData.consent.dataCollection} onChange={e => setFormData(prev => ({ ...prev, consent: { ...prev.consent, dataCollection: e.target.checked } }))} /> <span className="ml-2">Consent for Data Collection & Storage</span></label>
+                <label className="flex items-center"><input type="checkbox" checked={formData.consent.clinicalTreatment} onChange={e => setFormData(prev => ({ ...prev, consent: { ...prev.consent, clinicalTreatment: e.target.checked } }))} /> <span className="ml-2">Consent for Clinical Treatment</span></label>
+                <label className="flex items-center"><input type="checkbox" checked={formData.consent.teleconsultation} onChange={e => setFormData(prev => ({ ...prev, consent: { ...prev.consent, teleconsultation: e.target.checked } }))} /> <span className="ml-2">Consent for Teleconsultation</span></label>
+                <label className="flex items-center"><input type="checkbox" checked={formData.consent.dataSharing} onChange={e => setFormData(prev => ({ ...prev, consent: { ...prev.consent, dataSharing: e.target.checked } }))} /> <span className="ml-2">Consent for Data Sharing</span></label>
               </div>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Contact Name <span className="text-red-500">*</span></label>
+              <input type="text" name="medicalInfo.emergencyContact.name" value={formData.medicalInfo.emergencyContact.name} onChange={e => setFormData(prev => ({ ...prev, medicalInfo: { ...prev.medicalInfo, emergencyContact: { ...prev.medicalInfo.emergencyContact, name: e.target.value } } }))} className="w-full px-4 py-2 border border-blue-300 rounded-lg mb-2" required />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Emergency Contact Phone <span className="text-red-500">*</span></label>
+              <input type="text" name="medicalInfo.emergencyContact.phone" value={formData.medicalInfo.emergencyContact.phone} onChange={e => setFormData(prev => ({ ...prev, medicalInfo: { ...prev.medicalInfo, emergencyContact: { ...prev.medicalInfo.emergencyContact, phone: e.target.value } } }))} className="w-full px-4 py-2 border border-blue-300 rounded-lg mb-2" required pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number" />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Relationship <span className="text-red-500">*</span></label>
+              <input type="text" name="medicalInfo.emergencyContact.relationship" value={formData.medicalInfo.emergencyContact.relationship} onChange={e => setFormData(prev => ({ ...prev, medicalInfo: { ...prev.medicalInfo, emergencyContact: { ...prev.medicalInfo.emergencyContact, relationship: e.target.value } } }))} className="w-full px-4 py-2 border border-blue-300 rounded-lg" required />
+            </div>
           </div>
-  </div>
-
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Adding Patient...' : 'Add Patient'}
-          </button>
-        </div>
+          {/* Additional Info */}
+          <div className="bg-white rounded-2xl shadow-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Insurance Status</label>
+              <select name="insuranceStatus" value={formData.insuranceStatus} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
+                <option value="Not Insured">Not Insured</option>
+                <option value="Insured">Insured</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Organ Donor Status</label>
+              <select name="organDonorStatus" value={formData.organDonorStatus} onChange={handleChange} className="w-full px-4 py-2 border border-blue-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+          </div>
+          <div className="flex justify-end mt-6">
+            <button type="submit" disabled={loading} className="px-8 py-3 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg font-semibold">
+              {loading ? 'Adding Patient...' : 'Add Patient'}
+            </button>
+          </div>
+        </form>
       </div>
-      </form>
     </div>
   )
 }

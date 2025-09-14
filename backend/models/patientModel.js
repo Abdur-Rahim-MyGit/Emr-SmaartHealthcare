@@ -5,6 +5,10 @@ const patientSchema = new mongoose.Schema({
         type: String, // URL or base64
         default: ''
     },
+    referringDoctor: {
+        name: { type: String, default: '' },
+        clinic: { type: String, default: '' }
+    },
     governmentId: {
         type: {
             type: String, // Aadhaar, Passport, etc.
@@ -32,9 +36,7 @@ const patientSchema = new mongoose.Schema({
         unique: true,
         index: true
     },
-    alternateUhid: {
-        type: String
-    },
+    // alternateUhid removed
     patientName: {
         type: String,
         required: [true, 'Patient name is required'],
@@ -63,9 +65,9 @@ const patientSchema = new mongoose.Schema({
         enum: ['Male', 'Female', 'Other']
     },
     bloodGroup: {
-        type: String,
-        required: [true, 'Blood group is required'],
-        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+    type: String,
+    required: false,
+    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
     },
     occupation: {
         type: String

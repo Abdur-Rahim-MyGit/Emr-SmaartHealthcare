@@ -14,112 +14,23 @@ const PatientsList = () => {
     const [sortOrder, setSortOrder] = useState('asc');
 
     useEffect(() => {
-        loadPatients();
-    }, []);
-
-    const loadPatients = async () => {
-        try {
+        const fetchPatients = async () => {
             setLoading(true);
-            await getAllPatients();
-        } catch (error) {
-            toast.error('Failed to load patients');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const getFilteredAndSortedPatients = () => {
-        // Create a copy of patients array to avoid mutating the original
-        let filtered = [...patients];
-
-        // Apply search filter
-        if (searchTerm.trim()) {
-            const searchLower = searchTerm.toLowerCase().trim();
-            filtered = filtered.filter(patient => {
-                const searchFields = [
-                    patient?.name,
-                    patient?.email,
-                    patient?.phone,
-                    patient?.uhid,
-                    patient?.bloodGroup
-                ];
-                return searchFields.some(field => 
-                    field && field.toLowerCase().includes(searchLower)
-                );
-            });
-        }
-
-        // Apply gender filter
-        if (filterGender !== 'all') {
-            filtered = filtered.filter(patient => 
-                patient?.gender?.toLowerCase() === filterGender.toLowerCase()
-            );
-        }
-
-        // Apply age filter
-        if (filterAge !== 'all') {
-            filtered = filtered.filter(patient => {
-                const age = parseInt(patient?.age) || 0;
-                switch (filterAge) {
-                    case 'child':
-                        return age < 18;
-                    case 'adult':
-                        return age >= 18 && age < 60;
-                    case 'senior':
-                        return age >= 60;
-                    default:
-                        return true;
-                }
-            });
-        }
-
-        // Apply sorting
-        filtered.sort((a, b) => {
-            let comparison = 0;
-            const aVal = a || {};
-            const bVal = b || {};
-
-            switch (sortBy) {
-                case 'name':
-                    comparison = (aVal.name || '').localeCompare(bVal.name || '');
-                    break;
-                case 'age':
-                    const aAge = parseInt(aVal.age) || 0;
-                    const bAge = parseInt(bVal.age) || 0;
-                    comparison = aAge - bAge;
-                    break;
-                case 'appointments':
-                    const aCount = aVal.appointments?.length || 0;
-                    const bCount = bVal.appointments?.length || 0;
-                    comparison = aCount - bCount;
-                    break;
-                default:
-                    comparison = 0;
+            try {
+                await getAllPatients();
+            } catch (err) {
+                toast.error('Failed to fetch patients');
             }
-
-            return sortOrder === 'asc' ? comparison : -comparison;
-        });
-
-        return filtered;
-    };
-
-    const filteredPatients = getFilteredAndSortedPatients();
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <FaSpinner className="w-8 h-8 animate-spin text-primary" />
-            </div>
-        );
-    }
-
+            setLoading(false);
+        };
+        fetchPatients();
+    }, []);
     return (
         <div className="p-6">
             <div className="mb-8">
                 <h1 className="text-2xl font-bold text-gray-900">Patients List</h1>
                 <p className="text-gray-500">View and manage patient information</p>
             </div>
-
             {/* Search and Filters */}
             <div className="mb-6 space-y-4">
                 <div className="flex flex-col md:flex-row gap-4">
@@ -133,7 +44,6 @@ const PatientsList = () => {
                         />
                         <FaSearch className="absolute left-3 top-3 text-gray-400" />
                     </div>
-
                     <div className="flex gap-4">
                         <select
                             value={filterGender}
@@ -145,7 +55,6 @@ const PatientsList = () => {
                             <option value="female">Female</option>
                             <option value="other">Other</option>
                         </select>
-
                         <select
                             value={filterAge}
                             onChange={(e) => setFilterAge(e.target.value)}
@@ -158,7 +67,6 @@ const PatientsList = () => {
                         </select>
                     </div>
                 </div>
-
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
                         <FaFilter className="text-gray-500" />
@@ -183,88 +91,81 @@ const PatientsList = () => {
                     </select>
                 </div>
             </div>
-
-            {/* Patients Grid */}
-            {filteredPatients.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredPatients.map((patient) => (
-                        <Link
-                            key={patient._id}
-                            to={`/patient-details/${patient._id}`}
-                            className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow"
-                        >
-                            <div className="flex items-start gap-4">
-                                <div className="flex-shrink-0">
-                                    {patient.photograph ? (
-                                        <img
-                                            src={typeof patient.photograph === 'string' ? patient.photograph : URL.createObjectURL(patient.photograph)}
-                                            alt={patient.name}
-                                            className="w-12 h-12 rounded-full object-cover"
-                                        />
-                                    ) : patient.avatar ? (
-                                        <img
-                                            src={patient.avatar}
-                                            alt={patient.name}
-                                            className="w-12 h-12 rounded-full object-cover"
-                                        />
-                                    ) : (
-                                        <FaUserCircle className="w-12 h-12 text-gray-400" />
-                                    )}
-                                </div>
-                                <div className="flex-grow">
-                                    <h3 className="font-medium text-gray-900">{patient.name || 'No Name'}</h3>
-                                    <p className="text-sm text-gray-500">{patient.uhid || 'UHID: Not assigned'}</p>
-                                    <div className="mt-2 space-y-1">
-                                        <p className="text-sm text-gray-600">{patient.email || 'No email'}</p>
-                                        <p className="text-sm text-gray-600">{patient.phone || 'No phone'}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="mt-4 pt-4 border-t grid grid-cols-2 gap-4">
-                                <div className="flex items-center text-sm text-gray-500">
-                                    <FaCalendarAlt className="mr-2" />
-                                    {patient.appointments?.length || 0} Appointments
-                                </div>
-                                <div className="flex items-center text-sm text-gray-500">
-                                    <FaFileMedical className="mr-2" />
-                                    {patient.clinicalRecords?.length || 0} Records
-                                </div>
-                            </div>
-
-                            <div className="mt-4 flex flex-wrap gap-2">
-                                {patient.bloodGroup && (
-                                    <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">
-                                        {patient.bloodGroup}
-                                    </span>
-                                )}
-                                {patient.gender && (
-                                    <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                        {patient.gender}
-                                    </span>
-                                )}
-                                {patient.age && (
-                                    <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                                        {patient.age} years
-                                    </span>
-                                )}
-                            </div>
-                        </Link>
-                    ))}
+            {/* Patients List View */}
+            {patients && patients.length > 0 ? (
+                <div className="bg-white rounded-xl shadow-sm">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Photo</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">UHID</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {patients
+                                .filter(patient => {
+                                    const term = searchTerm.toLowerCase();
+                                    return (
+                                        patient.name?.toLowerCase().includes(term) ||
+                                        patient.email?.toLowerCase().includes(term) ||
+                                        patient.phone?.toLowerCase().includes(term) ||
+                                        patient.uhid?.toLowerCase().includes(term) ||
+                                        patient.bloodGroup?.toLowerCase().includes(term)
+                                    );
+                                })
+                                .filter(patient => {
+                                    if (filterGender === 'all') return true;
+                                    return patient.gender?.toLowerCase() === filterGender;
+                                })
+                                .filter(patient => {
+                                    if (filterAge === 'all') return true;
+                                    const age = Number(patient.age);
+                                    if (filterAge === 'child') return age >= 0 && age <= 17;
+                                    if (filterAge === 'adult') return age >= 18 && age <= 59;
+                                    if (filterAge === 'senior') return age >= 60;
+                                    return true;
+                                })
+                                .sort((a, b) => {
+                                    if (sortBy === 'name') {
+                                        if (sortOrder === 'asc') return a.name.localeCompare(b.name);
+                                        else return b.name.localeCompare(a.name);
+                                    }
+                                    if (sortBy === 'age') {
+                                        if (sortOrder === 'asc') return a.age - b.age;
+                                        else return b.age - a.age;
+                                    }
+                                    return 0;
+                                })
+                                .map((patient) => (
+                                    <tr key={patient._id} className="hover:bg-blue-50 cursor-pointer" onClick={() => window.location.href = `/patient-details/${patient._id}` }>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {patient.photograph ? (
+                                                <img src={patient.photograph} alt={patient.name} className="w-10 h-10 rounded-full object-cover border-2 border-blue-300" />
+                                            ) : (
+                                                <FaUserCircle className="w-10 h-10 text-gray-400" />
+                                            )}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{patient.name || patient.patientName || 'No Name'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-gray-500">{patient.uhid || 'Not assigned'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{patient.gender || 'Not specified'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{patient.age ? patient.age + ' years' : 'N/A'}</td>
+                                    </tr>
+                                ))}
+                        </tbody>
+                    </table>
                 </div>
             ) : (
                 <div className="text-center py-12">
                     <FaUserCircle className="mx-auto h-12 w-12 text-gray-400" />
                     <h3 className="mt-2 text-sm font-medium text-gray-900">No patients found</h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                        {searchTerm || filterGender !== 'all' || filterAge !== 'all'
-                            ? 'Try adjusting your search or filters'
-                            : 'No patients have been registered yet'}
-                    </p>
+                    <p className="mt-1 text-sm text-gray-500">No patients have been registered yet</p>
                 </div>
             )}
         </div>
     );
-};
+}
 
-export default PatientsList; 
+export default PatientsList;
