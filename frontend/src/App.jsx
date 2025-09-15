@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import Navbar from './components/Navbar'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import Home from './pages/Home'
@@ -19,7 +19,6 @@ import TopDoctors from './components/TopDoctors'
 import Testimonials from './components/Testimonials'
 import CallToAction from './components/CallToAction'
 import { AppContext } from './context/AppContext'
-import React, { useEffect } from 'react';
 const API_BASE = import.meta.env.VITE_API_URL;
 
 useEffect(() => {
