@@ -14,7 +14,7 @@ const DoctorsList = () => {
     if (aToken) {
       loadDoctors()
     }
-}, [aToken])
+  }, [aToken])
 
   const loadDoctors = async () => {
     setLoading(true)
@@ -39,9 +39,12 @@ const DoctorsList = () => {
   const specialities = ['all', ...new Set(doctors.map(doc => doc.speciality))]
 
   const filteredDoctors = doctors.filter(doctor => {
-    const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doctor.speciality.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesSpeciality = filterSpeciality === 'all' || doctor.speciality === filterSpeciality
+    const name = (doctor.name || '').toLowerCase()
+    const speciality = (doctor.speciality || '').toLowerCase()
+    const search = searchTerm.toLowerCase()
+
+    const matchesSearch = name.includes(search) || speciality.includes(search)
+    const matchesSpeciality = filterSpeciality === 'all' || speciality === filterSpeciality.toLowerCase()
     return matchesSearch && matchesSpeciality
   })
 
@@ -149,10 +152,10 @@ const DoctorsList = () => {
                     <span className="ms-3 text-sm font-medium text-gray-700">Available</span>
                   </label>
                 </div>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
       )}
 
       {/* Empty State */}
