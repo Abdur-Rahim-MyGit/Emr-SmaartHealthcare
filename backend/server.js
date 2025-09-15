@@ -30,8 +30,8 @@ app.use("/uploads", express.static("uploads"));
 const allowedOrigins = [
   "http://localhost:5173",
   "https://frontendsmaarthealth.netlify.app",
-  "http://localhost:5173",// Add your frontend URL explicitly here
-  "https://emr-smaarthealthcare.onrender.com", // If your backend calls itself (optional)
+  "https://adminsmaarthealthcare.netlify.app",  // <-- Added admin frontend URL here
+  "https://emr-smaarthealthcare.onrender.com", // Backend URL if backend calls itself
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -59,8 +59,6 @@ app.use(
     exposedHeaders: ["Authorization", "atoken", "dtoken", "token"],
   })
 );
-
-// No need for manual header middleware, cors handles this now
 
 // Health check endpoint
 app.get("/health", (req, res) => {
@@ -126,7 +124,6 @@ app.use(errorMiddleware);
 // Handle uncaught errors
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Promise Rejection:", err);
-  // Give the server a chance to finish current requests
   if (server) {
     server.close(() => process.exit(1));
   } else {
