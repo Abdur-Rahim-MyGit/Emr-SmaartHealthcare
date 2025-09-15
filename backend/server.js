@@ -29,7 +29,8 @@ app.use("/uploads", express.static("uploads"));
 // Configure CORS
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://frontendsmaarthealth.netlify.app", // Add your frontend URL explicitly here
+  "https://frontendsmaarthealth.netlify.app",
+  "http://localhost:5173",// Add your frontend URL explicitly here
   "https://emr-smaarthealthcare.onrender.com", // If your backend calls itself (optional)
   process.env.FRONTEND_URL,
 ].filter(Boolean);
