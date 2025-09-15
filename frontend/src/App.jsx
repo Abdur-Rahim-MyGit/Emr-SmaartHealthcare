@@ -19,6 +19,7 @@ import TopDoctors from './components/TopDoctors'
 import Testimonials from './components/Testimonials'
 import CallToAction from './components/CallToAction'
 import { AppContext } from './context/AppContext'
+import React, { useEffect } from 'react';
 const API_BASE = import.meta.env.VITE_API_URL;
 
 useEffect(() => {
