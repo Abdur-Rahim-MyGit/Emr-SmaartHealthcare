@@ -19,6 +19,7 @@ import TopDoctors from './components/TopDoctors';
 import Testimonials from './components/Testimonials';
 import CallToAction from './components/CallToAction';
 import { AppContext } from './context/AppContext';
+
 const API_BASE = import.meta.env.VITE_API_URL;
 
 import Features from './components/Features';
@@ -31,29 +32,60 @@ import Dashboard from './pages/Dashboard';
 const ProtectedRoute = ({ children }) => {
   const { token } = useContext(AppContext);
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
   return children;
 };
 
 const App = () => {
   const navigate = useNavigate();
+  const { token, setToken } = useContext(AppContext);
 
-  // State declared only once here
+  // State for controlling appointment modal
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
 
   useEffect(() => {
-  const token = localStorage.getItem("token");
+    // If no token in context, check localStorage and set it if found
+    if (!token) {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken);
+      } else {
+        // No token at all, no need to fetch profile
+        return;
+      }
+    }
 
-  fetch(`${API_BASE}/api/user/get-profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then(res => res.json())
-    .then(data => console.log("User profile:", data))
-    .catch(err => console.error("Error fetching user profile:", err));
-}, []);
+    // Fetch user profile only if token exists
+    fetch(`${API_BASE}/api/user/get-profile`, {
+      headers: {
+        Authorization: `Bearer ${token || localStorage.getItem('token')}`,
+      },
+    })
+      .then(async (res) => {
+        if (res.status === 401) {
+          // Unauthorized: token invalid or expired
+          // Clear token and redirect to login
+          setToken(null);
+          localStorage.removeItem('token');
+          navigate('/login');
+          throw new Error('Unauthorized, please login again');
+        }
+        if (!res.ok) {
+          // Other errors
+          const errorText = await res.text();
+          throw new Error(errorText || 'Failed to fetch profile');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log('User profile:', data);
+        // Optionally you can set user data in context here
+      })
+      .catch((err) => {
+        console.error('Error fetching user profile:', err);
+      });
+  }, [token, setToken, navigate]);
 
   const openAppointmentModal = () => setShowAppointmentModal(true);
   const closeAppointmentModal = () => setShowAppointmentModal(false);
