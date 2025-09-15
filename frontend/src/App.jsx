@@ -19,6 +19,8 @@ import TopDoctors from './components/TopDoctors'
 import Testimonials from './components/Testimonials'
 import CallToAction from './components/CallToAction'
 import { AppContext } from './context/AppContext'
+const API_BASE=import.meata.env.VITE_API_URL;
+
 import { useContext, useState } from 'react'
 // Removed duplicate import
 import Features from './components/Features'
@@ -27,6 +29,8 @@ import MedicalRecords from './pages/MedicalRecords'
 import Services from './pages/Services'
 import AppointmentBooking from './pages/AppointmentBooking'
 import Dashboard from './pages/Dashboard';
+
+
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useContext(AppContext);
