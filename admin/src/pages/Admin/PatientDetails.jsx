@@ -5,6 +5,20 @@ import { toast } from 'react-toastify';
 import { FaSpinner, FaCalendarAlt, FaNotesMedical, FaFileMedical, FaArrowLeft, FaUserCircle, FaHeartbeat, FaStethoscope, FaUserMd, FaClock, FaFilter, FaSort, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
 
 const PatientDetails = () => {
+    const { patientId } = useParams();
+    const navigate = useNavigate();
+    const { getPatientDetails } = useContext(AdminContext);
+    
+    const [patient, setPatient] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedPatient, setEditedPatient] = useState(null);
+    const [clinicalRecords, setClinicalRecords] = useState([]);
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [filterType, setFilterType] = useState('all');
+    const [sortBy, setSortBy] = useState('date');
+    const [sortOrder, setSortOrder] = useState('desc');
+    
     // Modal state for vitals entry
     const [showVitalsModal, setShowVitalsModal] = useState(false);
     const [vitalsForm, setVitalsForm] = useState({
@@ -12,6 +26,28 @@ const PatientDetails = () => {
         weight: '',
         // ...other vitals fields...
     });
+
+    useEffect(() => {
+        if (patientId) {
+            fetchPatientDetails();
+        }
+    }, [patientId]);
+
+    const fetchPatientDetails = async () => {
+        try {
+            setLoading(true);
+            const response = await getPatientDetails(patientId);
+            if (response.success) {
+                setPatient(response.patient);
+                setClinicalRecords(response.patient.clinicalRecords || []);
+            }
+        } catch (error) {
+            console.error('Error fetching patient details:', error);
+            toast.error('Failed to load patient details');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Helper functions
     const getStatusClass = (status) => {
@@ -167,7 +203,108 @@ const PatientDetails = () => {
     // Main return statement
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6">
-            {/* ...existing code for header, patient info, vitals modal, tabs, and content sections... */}
+            <div className="max-w-7xl mx-auto">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-4">
+                        <button
+                            onClick={() => navigate('/patients-list')}
+                            className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                        >
+                            <FaArrowLeft className="mr-2" />
+                            Back to Patients
+                        </button>
+                        <h1 className="text-3xl font-bold text-gray-900">Patient Details</h1>
+                    </div>
+                </div>
+
+                {/* Patient Basic Info Card */}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-4">
+                            <FaUserCircle className="w-16 h-16 text-gray-400" />
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900">{patient?.name || 'Unknown Patient'}</h2>
+                                <p className="text-gray-600">UHID: {patient?.uhid || 'Not assigned'}</p>
+                            </div>
+                        </div>
+                        <div className="flex space-x-2">
+                            {!isEditing ? (
+                                <button
+                                    onClick={handleEdit}
+                                    className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                >
+                                    <FaEdit className="mr-2" />
+                                    Edit
+                                </button>
+                            ) : (
+                                <div className="flex space-x-2">
+                                    <button
+                                        onClick={handleSave}
+                                        className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                                    >
+                                        <FaSave className="mr-2" />
+                                        Save
+                                    </button>
+                                    <button
+                                        onClick={handleCancel}
+                                        className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                    >
+                                        <FaTimes className="mr-2" />
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <p className="text-gray-900">{patient?.email || 'Not provided'}</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <p className="text-gray-900">{patient?.phone || 'Not provided'}</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                            <p className="text-gray-900">{getDisplayAge(patient?.dateOfBirth)}</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                            <p className="text-gray-900">{patient?.gender || 'Not specified'}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Clinical Records Section */}
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4">Clinical Records</h3>
+                    {clinicalRecords.length === 0 ? (
+                        <p className="text-gray-600">No clinical records found for this patient.</p>
+                    ) : (
+                        <div className="space-y-4">
+                            {clinicalRecords.map((record, index) => (
+                                <div key={index} className="border border-gray-200 rounded-lg p-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <h4 className="font-semibold text-gray-900">{record.reasonForVisit}</h4>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClass(record.currentClinicalStatus)}`}>
+                                            {record.currentClinicalStatus}
+                                        </span>
+                                    </div>
+                                    <p className="text-gray-600 text-sm mb-2">
+                                        Date: {formatDate(record.encounterDate)} | Doctor: {record.consultedDoctor}
+                                    </p>
+                                    <p className="text-gray-700">{record.diagnosis}</p>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
+
+export default PatientDetails;

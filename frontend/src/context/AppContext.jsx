@@ -20,7 +20,14 @@ const AppContextProvider = ({ children }) => {
             const { data } = await api.get('/api/doctor/list')
             
             if (data.success) {
-                setDoctors(data.doctors)
+                // Fix image URLs to use proper Cloudinary format
+                const doctorsWithFixedImages = data.doctors.map(doctor => ({
+                    ...doctor,
+                    image: doctor.image && doctor.image.includes('cloudinary.com') && !doctor.image.startsWith('http')
+                        ? `https://res.${doctor.image}`
+                        : doctor.image
+                }))
+                setDoctors(doctorsWithFixedImages)
             } else {
                 toast.error(data.message)
             }
