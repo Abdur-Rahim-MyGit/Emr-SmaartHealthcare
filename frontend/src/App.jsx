@@ -19,7 +19,13 @@ import TopDoctors from './components/TopDoctors'
 import Testimonials from './components/Testimonials'
 import CallToAction from './components/CallToAction'
 import { AppContext } from './context/AppContext'
-const API_BASE=import.meata.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL;
+
+useEffect(() => {
+  fetch(${API_BASE}/api/users)
+    .then(res => res.json())
+    .then(data => console.log(data));
+}, []);
 
 import { useContext, useState } from 'react'
 // Removed duplicate import
