@@ -22,7 +22,7 @@ import { AppContext } from './context/AppContext'
 const API_BASE = import.meta.env.VITE_API_URL;
 
 useEffect(() => {
-  fetch(${API_BASE}/api/users)
+  fetch($(API_BASE)/api/users)
     .then(res => res.json())
     .then(data => console.log(data));
 }, []);
