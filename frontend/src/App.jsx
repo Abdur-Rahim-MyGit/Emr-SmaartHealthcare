@@ -21,11 +21,6 @@ import CallToAction from './components/CallToAction'
 import { AppContext } from './context/AppContext'
 const API_BASE = import.meta.env.VITE_API_URL;
 
-useEffect(() => {
-  fetch($(API_BASE)/api/users)
-    .then(res => res.json())
-    .then(data => console.log(data));
-}, []);
 
 import { useContext, useState } from 'react'
 // Removed duplicate import
@@ -48,6 +43,14 @@ const ProtectedRoute = ({ children }) => {
 
 const App = () => {
   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/api/users`)
+      .then(res => res.json())
+      .then(data => console.log(data));
+  }, []);
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
   const openAppointmentModal = () => setShowAppointmentModal(true);
   const closeAppointmentModal = () => setShowAppointmentModal(false);
