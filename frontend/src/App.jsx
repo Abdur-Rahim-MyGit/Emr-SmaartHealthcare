@@ -43,7 +43,7 @@ const App = () => {
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/users`)
+    fetch(`${API_BASE}/api/user`)
       .then(res => res.json())
       .then(data => console.log(data))
       .catch(err => console.error('Error fetching users:', err));
