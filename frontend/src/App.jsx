@@ -43,7 +43,6 @@ const ProtectedRoute = ({ children }) => {
 
 const App = () => {
   const navigate = useNavigate();
-  const navigate = useNavigate();
   const [showAppointmentModal, setShowAppointmentModal] = useState(false);
 
   useEffect(() => {
