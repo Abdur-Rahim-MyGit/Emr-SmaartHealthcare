@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="40" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .brand { font-family: Arial, sans-serif; font-weight: bold; }
+    .smaart { fill: #0066cc; }
+    .healthcare { fill: #333333; }
+  </style>
+  <text x="10" y="28" class="brand smaart">SMAART</text>
+  <text x="100" y="28" class="brand healthcare">Healthcare</text>
+</svg>
